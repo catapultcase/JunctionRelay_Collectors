@@ -92,10 +92,10 @@ describe('CollectorPlugin integration', () => {
     assert.equal(response.id, 3);
     assert.equal(response.error, undefined);
 
-    const result = response.result as { sensors: Array<{ externalId: string }> };
+    const result = response.result as { sensors: Array<{ uniqueSensorKey: string }> };
     assert.equal(result.sensors.length, 2);
-    assert.equal(result.sensors[0].externalId, 'test_sensor_1');
-    assert.equal(result.sensors[1].externalId, 'test_sensor_2');
+    assert.equal(result.sensors[0].uniqueSensorKey, 'test_sensor_1');
+    assert.equal(result.sensors[1].uniqueSensorKey, 'test_sensor_2');
   });
 
   it('handles fetchSelectedSensors with auto-filter', async () => {
@@ -105,9 +105,9 @@ describe('CollectorPlugin integration', () => {
     assert.equal(response.id, 4);
     assert.equal(response.error, undefined);
 
-    const result = response.result as { sensors: Array<{ externalId: string }> };
+    const result = response.result as { sensors: Array<{ uniqueSensorKey: string }> };
     assert.equal(result.sensors.length, 1);
-    assert.equal(result.sensors[0].externalId, 'test_sensor_1');
+    assert.equal(result.sensors[0].uniqueSensorKey, 'test_sensor_1');
   });
 
   it('handles healthCheck round trip', async () => {

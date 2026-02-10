@@ -32,11 +32,11 @@ describe('plugin-system-time', () => {
     assert.deepEqual(result, { success: true });
   });
 
-  it('returns 6 sensors with correct externalIds', async () => {
+  it('returns 6 sensors with correct uniqueSensorKeys', async () => {
     const result = await host.fetchSensors();
     assert.equal(result.sensors.length, 6);
 
-    const ids = result.sensors.map(s => s.externalId);
+    const ids = result.sensors.map(s => s.uniqueSensorKey);
     assert.ok(ids.includes('system_utc_time_iso'));
     assert.ok(ids.includes('system_utc_timestamp'));
     assert.ok(ids.includes('system_utc_time_readable'));
@@ -45,18 +45,18 @@ describe('plugin-system-time', () => {
     assert.ok(ids.includes('system_timezone'));
 
     // Verify sensor properties
-    const utcIso = result.sensors.find(s => s.externalId === 'system_utc_time_iso')!;
+    const utcIso = result.sensors.find(s => s.uniqueSensorKey === 'system_utc_time_iso')!;
     assert.equal(utcIso.sensorType, 'DateTime');
     assert.equal(utcIso.componentName, 'SystemTime');
     assert.equal(utcIso.category, 'System');
     assert.equal(utcIso.unit, 'UTC');
 
-    const timestamp = result.sensors.find(s => s.externalId === 'system_utc_timestamp')!;
+    const timestamp = result.sensors.find(s => s.uniqueSensorKey === 'system_utc_timestamp')!;
     assert.equal(timestamp.sensorType, 'Numeric');
     assert.equal(timestamp.unit, 'seconds');
     assert.ok(Number(timestamp.value) > 0);
 
-    const timezone = result.sensors.find(s => s.externalId === 'system_timezone')!;
+    const timezone = result.sensors.find(s => s.uniqueSensorKey === 'system_timezone')!;
     assert.equal(timezone.sensorType, 'Text');
     assert.ok(timezone.value.length > 0);
   });
@@ -97,11 +97,11 @@ describe('plugin-internet-time', () => {
     assert.deepEqual(result, { success: true });
   });
 
-  it('returns 5 sensors with correct externalIds', async () => {
+  it('returns 5 sensors with correct uniqueSensorKeys', async () => {
     const result = await host.fetchSensors();
     assert.equal(result.sensors.length, 5);
 
-    const ids = result.sensors.map(s => s.externalId);
+    const ids = result.sensors.map(s => s.uniqueSensorKey);
     assert.ok(ids.includes('internet_utc_time_iso'));
     assert.ok(ids.includes('internet_utc_timestamp'));
     assert.ok(ids.includes('internet_utc_time_readable'));
@@ -109,7 +109,7 @@ describe('plugin-internet-time', () => {
     assert.ok(ids.includes('internet_time_sync_status'));
 
     // Verify sensor properties
-    const source = result.sensors.find(s => s.externalId === 'internet_time_source')!;
+    const source = result.sensors.find(s => s.uniqueSensorKey === 'internet_time_source')!;
     assert.ok(['Internet', 'Cached'].includes(source.value));
     assert.equal(source.category, 'Network');
     assert.equal(source.componentName, 'InternetTime');

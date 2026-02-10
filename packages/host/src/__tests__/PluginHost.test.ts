@@ -35,14 +35,14 @@ describe('PluginHost integration', () => {
   it('fetches sensors', async () => {
     const result = await host.fetchSensors();
     assert.equal(result.sensors.length, 1);
-    assert.equal(result.sensors[0].externalId, 'host_test_1');
+    assert.equal(result.sensors[0].uniqueSensorKey, 'host_test_1');
     assert.equal(result.sensors[0].value, '100');
   });
 
   it('fetches selected sensors', async () => {
     const result = await host.fetchSelectedSensors({ sensorIds: ['host_test_1'] });
     assert.equal(result.sensors.length, 1);
-    assert.equal(result.sensors[0].externalId, 'host_test_1');
+    assert.equal(result.sensors[0].uniqueSensorKey, 'host_test_1');
   });
 
   it('runs health check', async () => {

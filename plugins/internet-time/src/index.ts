@@ -144,7 +144,7 @@ new CollectorPlugin({
 
     const sensors: SensorResult[] = [
       {
-        externalId: 'internet_utc_time_iso',
+        uniqueSensorKey: 'internet_utc_time_iso',
         name: 'Internet UTC Time (ISO 8601)',
         value: time.toISOString(),
         unit: 'UTC',
@@ -155,7 +155,7 @@ new CollectorPlugin({
         sensorTag: 'Time',
       },
       {
-        externalId: 'internet_utc_timestamp',
+        uniqueSensorKey: 'internet_utc_timestamp',
         name: 'Internet UTC Timestamp',
         value: String(Math.floor(time.getTime() / 1000)),
         unit: 'seconds',
@@ -166,7 +166,7 @@ new CollectorPlugin({
         sensorTag: 'Timestamp',
       },
       {
-        externalId: 'internet_utc_time_readable',
+        uniqueSensorKey: 'internet_utc_time_readable',
         name: 'Internet UTC Time (Readable)',
         value: time.toUTCString(),
         unit: 'UTC',
@@ -177,7 +177,7 @@ new CollectorPlugin({
         sensorTag: 'Time',
       },
       {
-        externalId: 'internet_time_source',
+        uniqueSensorKey: 'internet_time_source',
         name: 'Time Source',
         value: source,
         unit: 'Source',
@@ -188,7 +188,7 @@ new CollectorPlugin({
         sensorTag: 'Source',
       },
       {
-        externalId: 'internet_time_sync_status',
+        uniqueSensorKey: 'internet_time_sync_status',
         name: 'Time Sync Status',
         value: isConnected ? 'Connected' : 'Disconnected',
         unit: 'Status',

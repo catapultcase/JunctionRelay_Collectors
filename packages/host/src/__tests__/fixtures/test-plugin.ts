@@ -23,7 +23,7 @@ new CollectorPlugin({
     return {
       sensors: [
         {
-          externalId: 'host_test_1',
+          uniqueSensorKey: 'host_test_1',
           name: 'Host Test Sensor',
           value: '100',
           unit: 'units',

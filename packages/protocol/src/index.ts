@@ -93,7 +93,7 @@ export interface ConfigureParams {
 }
 
 export interface SensorResult {
-  externalId: string;
+  uniqueSensorKey: string;
   name: string;
   value: string;
   unit: string;

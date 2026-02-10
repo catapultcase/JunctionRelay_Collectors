@@ -38,7 +38,7 @@ new CollectorPlugin({
 
     const sensors: SensorResult[] = [
       {
-        externalId: 'system_utc_time_iso',
+        uniqueSensorKey: 'system_utc_time_iso',
         name: 'System UTC Time (ISO 8601)',
         value: utcIso,
         unit: 'UTC',
@@ -49,7 +49,7 @@ new CollectorPlugin({
         sensorTag: 'Time',
       },
       {
-        externalId: 'system_utc_timestamp',
+        uniqueSensorKey: 'system_utc_timestamp',
         name: 'System UTC Timestamp',
         value: utcTimestamp,
         unit: 'seconds',
@@ -60,7 +60,7 @@ new CollectorPlugin({
         sensorTag: 'Timestamp',
       },
       {
-        externalId: 'system_utc_time_readable',
+        uniqueSensorKey: 'system_utc_time_readable',
         name: 'System UTC Time (Readable)',
         value: utcReadable,
         unit: 'UTC',
@@ -71,7 +71,7 @@ new CollectorPlugin({
         sensorTag: 'Time',
       },
       {
-        externalId: 'system_local_time_iso',
+        uniqueSensorKey: 'system_local_time_iso',
         name: 'System Local Time (ISO 8601)',
         value: localIso,
         unit: 'Local',
@@ -82,7 +82,7 @@ new CollectorPlugin({
         sensorTag: 'Time',
       },
       {
-        externalId: 'system_local_time_readable',
+        uniqueSensorKey: 'system_local_time_readable',
         name: 'System Local Time (Readable)',
         value: localReadable,
         unit: 'Local',
@@ -93,7 +93,7 @@ new CollectorPlugin({
         sensorTag: 'Time',
       },
       {
-        externalId: 'system_timezone',
+        uniqueSensorKey: 'system_timezone',
         name: 'System Timezone',
         value: timezone,
         unit: 'Zone',

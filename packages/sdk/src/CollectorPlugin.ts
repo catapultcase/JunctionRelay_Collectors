@@ -124,7 +124,7 @@ export class CollectorPlugin {
         if (this.config.fetchSensors) {
           const all = await this.config.fetchSensors(this.currentConfig);
           return {
-            sensors: all.sensors.filter((s) => selectedParams.sensorIds.includes(s.externalId)),
+            sensors: all.sensors.filter((s) => selectedParams.sensorIds.includes(s.uniqueSensorKey)),
           };
         }
         return { sensors: [] };

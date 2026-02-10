@@ -34,7 +34,7 @@ function entityToSensor(entity: HAEntity): SensorResult {
   const unit = entity.attributes?.unit_of_measurement ?? 'N/A';
 
   return {
-    externalId: entity.entity_id,
+    uniqueSensorKey: entity.entity_id,
     name: friendlyName,
     value: entity.state,
     unit,

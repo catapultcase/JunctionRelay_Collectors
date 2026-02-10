@@ -154,11 +154,11 @@ new CollectorPlugin({
         sensorValue = formatValue(value);
       }
 
-      const externalId = sensorKey.toLowerCase().replace(/\s+/g, '_');
+      const uniqueSensorKey = sensorKey.toLowerCase().replace(/\s+/g, '_');
       const category = determineCategory(key);
 
       sensors.push({
-        externalId,
+        uniqueSensorKey,
         name: key,
         value: sensorValue,
         unit: determineUnit(key, value),

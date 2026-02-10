@@ -24,7 +24,7 @@ new CollectorPlugin({
     return {
       sensors: [
         {
-          externalId: 'test_sensor_1',
+          uniqueSensorKey: 'test_sensor_1',
           name: 'Test Sensor 1',
           value: '42',
           unit: 'units',
@@ -35,7 +35,7 @@ new CollectorPlugin({
           sensorTag: 'test_1',
         },
         {
-          externalId: 'test_sensor_2',
+          uniqueSensorKey: 'test_sensor_2',
           name: 'Test Sensor 2',
           value: '3.14',
           unit: 'units',
