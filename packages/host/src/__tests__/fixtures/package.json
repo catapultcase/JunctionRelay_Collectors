@@ -1,0 +1,10 @@
+{
+  "name": "@junctionrelay/test-fixture-plugin",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "test-plugin.ts",
+  "junctionrelay": {
+    "type": "collector",
+    "entry": "test-plugin.ts"
+  }
+}
