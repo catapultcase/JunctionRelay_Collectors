@@ -1,0 +1,29 @@
+{
+  "name": "@junctionrelay/plugin-claude",
+  "version": "1.0.0",
+  "description": "Claude (Anthropic) API usage, costs, and organization monitoring plugin for JunctionRelay",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "junctionrelay": {
+    "type": "collector",
+    "entry": "dist/index.js"
+  },
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@junctionrelay/collector-sdk": "1.0.0"
+  },
+  "license": "MIT"
+}
