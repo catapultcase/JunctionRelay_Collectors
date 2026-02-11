@@ -7,7 +7,7 @@
     "plugins/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
+    "build": "npm run build -w packages/protocol && npm run build --workspaces",
     "test": "npm test --workspaces --if-present",
     "clean": "npm run clean --workspaces --if-present"
   },
