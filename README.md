@@ -6,14 +6,14 @@ Plugins are discovered automatically — no host code changes required. Place a 
 
 ## Included Plugins
 
-| Plugin | Category | Description | Tech |
-|--------|----------|-------------|------|
-| `system-time` | System & Testing | Local system clock | Node.js `Date` + `Intl` APIs |
-| `internet-time` | System & Testing | UTC time from internet sources | `fetch` → WorldTimeAPI, TimeAPI, Google |
-| `generic-api` | System & Testing | Any JSON API endpoint | `fetch` → user-configured URL |
-| `home-assistant` | Home & IoT | Smart home entities | `fetch` → Home Assistant REST API |
-| `host-windows` | System & Monitoring | CPU, GPU, memory, disk, network, battery | Python subprocess → `psutil`, `GPUtil`, `gpu-reader.exe` |
-| `claude` | Cloud Services | Anthropic API usage, costs, and org data | `fetch` → Anthropic Admin API |
+| Plugin | Category | Description | Bundled Dependencies |
+|--------|----------|-------------|----------------------|
+| `system-time` | System & Testing | Local system clock | None |
+| `internet-time` | System & Testing | UTC time from internet sources | None |
+| `generic-api` | System & Testing | Any JSON API endpoint | None |
+| `home-assistant` | Home & IoT | Smart home entities | None |
+| `host-windows` | System & Monitoring | CPU, GPU, memory, disk, network, battery | Python 3.11, psutil, GPUtil, gpu-reader.exe |
+| `claude` | Cloud Services | Anthropic API usage, costs, and org data | None |
 
 ## Quick Start
 
