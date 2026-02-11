@@ -69,19 +69,28 @@ import { getDecimalPlaces, sanitizeSensorValue, safeRound } from '@junctionrelay
 import type { SensorResult, ConfigureParams, CollectorMetadata } from '@junctionrelay/collector-sdk';
 ```
 
-## Bundle All Dependencies
+## Dependencies & Bundling
 
-**Plugins must be fully self-contained.** Do not assume anything is installed on the user's machine beyond Node.js.
+**Plugins must be self-contained.** The user should be able to drop your plugin folder into the collectors directory and have it work.
 
-- **npm dependencies** — Use esbuild to inline all npm packages into a single `dist/index.js`. No `node_modules` at runtime.
-- **Python, native binaries, runtimes** — Bundle them inside your plugin folder (e.g., `binaries/python/`, `binaries/gpu-reader.exe`). The user should be able to drop your plugin folder into the collectors directory and have it work immediately.
+**npm dependencies** — Use esbuild to inline all npm packages into a single `dist/index.js`. No `node_modules` at runtime.
+
+**Pre-bundled runtimes** — Server and XSD ship with Node.js and Python 3.11 (with psutil and GPUtil). Your plugin can rely on these without re-bundling them.
+
+**Runtime resolution chain** — When a plugin needs Python (or another runtime), it resolves using this priority:
+
+1. **Plugin-bundled** — `<plugin>/binaries/python/` (if present, takes priority)
+2. **Server-bundled** — shared runtimes shipped with the Server/XSD install
+3. **System-installed** — falls back to system `python` on PATH
+
+If your plugin needs a specific runtime version or a dependency not in the server bundle, place it in your plugin's `binaries/` directory and it will take priority.
 
 ```
 my-plugin/
 ├── package.json
 ├── dist/index.js          ← esbuild bundle (SDK + deps inlined)
 ├── python/                ← (if needed) Python scripts
-└── binaries/              ← (if needed) portable runtimes, native binaries
+└── binaries/              ← (if needed) only runtimes NOT already bundled with Server
 ```
 
 Build command:

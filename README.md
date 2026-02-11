@@ -189,7 +189,17 @@ collectors/
 │   └── binaries/            ← (optional) bundled runtimes or native binaries
 ```
 
-**Bundle all dependencies.** Plugins must be fully self-contained — do not assume anything is installed on the user's machine beyond Node.js. If your plugin needs Python, bundle a portable Python runtime. If it needs native binaries, include them. npm dependencies are inlined by esbuild into `dist/index.js` at build time. The user should be able to drop your plugin folder into the collectors directory and have it work immediately.
+**Plugins must be self-contained.** The user should be able to drop your plugin folder into the collectors directory and have it work immediately.
+
+**Pre-bundled runtimes:** Server and XSD ship with Node.js and Python 3.11 (with psutil and GPUtil). Your plugin can rely on these — no need to re-bundle them. npm dependencies are inlined by esbuild into `dist/index.js` at build time.
+
+**Runtime resolution chain:** When a plugin needs Python (or another runtime), it resolves using this priority:
+
+1. **Plugin-bundled** — `<plugin>/binaries/python/` (if present, takes priority — allows version override)
+2. **Server-bundled** — shared runtimes shipped with the Server/XSD install
+3. **System-installed** — falls back to system `python` on PATH
+
+If your plugin needs a specific runtime version or a dependency not included in the server bundle, bundle it in your plugin's `binaries/` directory and it will take priority.
 
 **Plugin locations:**
 - **Server (Windows):** `%APPDATA%/JunctionRelay/collectors/`
