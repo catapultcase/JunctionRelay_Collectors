@@ -252,21 +252,35 @@ interface ConfigureParams {
 
 ### `SensorResult`
 
-Each sensor you return from `fetchSensors`:
+Each sensor you return from `fetchSensors`. These fields map directly to the host's `Model_Sensor` — every sensor in the system (from devices, collectors, or plugins) uses the same model. The host fills in relationship fields (`CollectorId`, `DeviceName`, etc.) automatically — your plugin only provides the sensor data fields below.
 
 ```typescript
 interface SensorResult {
-  uniqueSensorKey: string;   // Stable identifier (e.g., "cpu_temp")
+  uniqueSensorKey: string;   // Stable identifier, stored as ExternalId in the DB (e.g., "cpu_temp")
   name: string;              // Display name (e.g., "CPU Temperature")
   value: string;             // Always a string — format numbers with toFixed()
-  unit: string;              // "count", "USD", "seconds", "N/A", etc.
-  category: string;          // Groups sensors in the UI
+  unit: string;              // Unit label: "%", "°C", "MB", "count", "N/A", etc.
+  category: string;          // Groups sensors in the UI (e.g., "CPU", "Memory", "Stats")
   decimalPlaces: number;     // Number of decimal places for numeric values
   sensorType: string;        // "Numeric", "Text", "DateTime", "API"
-  componentName: string;     // Source component name
-  sensorTag: string;         // Tag for the sensor
+  componentName: string;     // Source grouping (e.g., "homeassistant/192.168.1.100", "CPU")
+  sensorTag: string;         // Tag for dictionary mapping (e.g., "cpu_usage_total")
 }
 ```
+
+**Field details:**
+
+| Field | Maps to `Model_Sensor` | Purpose |
+|-------|----------------------|---------|
+| `uniqueSensorKey` | `ExternalId` | Stable key that persists across restarts. Must be unique within your plugin. Used for sensor selection and DB identity. |
+| `name` | `Name` | Human-readable label shown in the UI |
+| `value` | `Value` | Current reading as a string. Numbers should use consistent decimal formatting. |
+| `unit` | `Unit` | Display unit. Use `"N/A"` for dimensionless text values. |
+| `category` | `Category` | UI grouping. Sensors with the same category appear together. |
+| `decimalPlaces` | `DecimalPlaces` | Precision hint for numeric display |
+| `sensorType` | `SensorType` | Value type: `"Numeric"` (numbers), `"Text"` (strings), `"DateTime"` (timestamps), `"API"` (general API data) |
+| `componentName` | `ComponentName` | Source component — helps distinguish sensors when a collector has multiple sub-sources |
+| `sensorTag` | `SensorTag` | Tag for sensor dictionary matching. Dictionary-mapped plugins use standard tags (e.g., `cpu_usage_total`). Generic plugins can use any string. |
 
 ### SDK Helpers
 
