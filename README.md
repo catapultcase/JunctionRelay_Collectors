@@ -4,16 +4,27 @@ Plugin-based collector system for JunctionRelay. Each collector is a standalone 
 
 Plugins are discovered automatically — no host code changes required. Place a built plugin folder in the collectors directory, restart the app, and it appears in the UI.
 
+## Pre-bundled Runtimes
+
+Server and XSD ship with these runtimes — plugins can rely on them without bundling their own:
+
+| Runtime | Version | Included Libraries |
+|---------|---------|-------------------|
+| Node.js | 20 LTS | (plugin host — always available) |
+| Python | 3.11 | psutil, GPUtil |
+
+Native binaries shipped with the platform: `gpu-reader.exe` (Windows, AMD/Intel GPU).
+
 ## Included Plugins
 
-| Plugin | Category | Description | Bundled Dependencies |
-|--------|----------|-------------|----------------------|
-| `system-time` | System & Testing | Local system clock | None |
-| `internet-time` | System & Testing | UTC time from internet sources | None |
-| `generic-api` | System & Testing | Any JSON API endpoint | None |
-| `home-assistant` | Home & IoT | Smart home entities | None |
-| `host-windows` | System & Monitoring | CPU, GPU, memory, disk, network, battery | Python 3.11, psutil, GPUtil, gpu-reader.exe |
-| `claude` | Cloud Services | Anthropic API usage, costs, and org data | None |
+| Plugin | Category | Description |
+|--------|----------|-------------|
+| `system-time` | System & Testing | Local system clock |
+| `internet-time` | System & Testing | UTC time from internet sources |
+| `generic-api` | System & Testing | Any JSON API endpoint |
+| `home-assistant` | Home & IoT | Smart home entities |
+| `host-windows` | System & Monitoring | CPU, GPU, memory, disk, network, battery |
+| `claude` | Cloud Services | Anthropic API usage, costs, and org data |
 
 ## Quick Start
 
