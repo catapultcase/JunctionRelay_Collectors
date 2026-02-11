@@ -1,0 +1,34 @@
+{
+  "name": "@junctionrelay/plugin-host-windows",
+  "version": "1.0.0",
+  "description": "Host system metrics collector plugin for JunctionRelay (Windows)",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "junctionrelay": {
+    "type": "collector",
+    "entry": "dist/index.js"
+  },
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@junctionrelay/collector-sdk": "1.0.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/catapultcase/JunctionRelay_Collectors.git",
+    "directory": "plugins/host-windows"
+  }
+}
