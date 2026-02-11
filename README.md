@@ -177,15 +177,19 @@ npm run build
 
 ### Deploying a Plugin
 
-Place your built plugin folder in the collectors directory. Each plugin is a folder containing a `package.json` and a `dist/index.js`:
+Place your built plugin folder in the collectors directory. Each plugin is a self-contained folder — everything it needs to run must be inside it:
 
 ```
 collectors/
 ├── my-plugin/
 │   ├── package.json        ← must have junctionrelay.type = "collector"
-│   └── dist/
-│       └── index.js         ← the esbuild bundle
+│   ├── dist/
+│   │   └── index.js         ← the esbuild bundle
+│   ├── python/              ← (optional) bundled Python scripts
+│   └── binaries/            ← (optional) bundled runtimes or native binaries
 ```
+
+**Bundle all dependencies.** Plugins must be fully self-contained — do not assume anything is installed on the user's machine beyond Node.js. If your plugin needs Python, bundle a portable Python runtime. If it needs native binaries, include them. npm dependencies are inlined by esbuild into `dist/index.js` at build time. The user should be able to drop your plugin folder into the collectors directory and have it work immediately.
 
 **Plugin locations:**
 - **Server (Windows):** `%APPDATA%/JunctionRelay/collectors/`
@@ -334,11 +338,11 @@ JunctionRelay_Collectors/
 
 ## Building Without the Monorepo
 
-You don't have to develop inside this monorepo. You can build a plugin anywhere — the only requirement is that the final output is a folder with a `package.json` and `dist/index.js`.
+You don't have to develop inside this monorepo. You can build a plugin anywhere — the only requirement is that the final output is a fully self-contained folder.
 
 1. Copy any existing plugin as a starting point
 2. Install the SDK: `npm install @junctionrelay/collector-sdk`
 3. Write your plugin, bundle with esbuild (or any bundler that outputs a single ESM file)
 4. Place the resulting folder in the collectors directory
 
-The bundle must be a self-contained ESM file (`--platform=node --format=esm`). No `node_modules` needed at runtime — esbuild bundles the SDK into your output.
+The bundle must be a self-contained ESM file (`--platform=node --format=esm`). esbuild inlines all npm dependencies into your output — no `node_modules` needed at runtime. If your plugin uses non-Node.js dependencies (Python, native binaries, etc.), bundle them inside your plugin folder.
