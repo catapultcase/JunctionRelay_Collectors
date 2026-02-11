@@ -1,8 +1,8 @@
 # JunctionRelay Collectors
 
-Plugin-based collector system for JunctionRelay. Each collector is a standalone Node.js process that communicates with the Server over JSON-RPC 2.0 via stdin/stdout.
+Plugin-based collector system for JunctionRelay. Each collector is a standalone Node.js process that communicates with the host (Server or XSD) over JSON-RPC 2.0 via stdin/stdout.
 
-The Server discovers plugins automatically — no server code changes required. Drop a built plugin into the `plugins/` directory, restart the Server, and it appears in the UI.
+Plugins are discovered automatically — no host code changes required. Place a built plugin folder in the collectors directory, restart the app, and it appears in the UI.
 
 ## Included Plugins
 
@@ -12,6 +12,7 @@ The Server discovers plugins automatically — no server code changes required. 
 | `internet-time` | System & Testing | UTC time from internet sources |
 | `generic-api` | System & Testing | Any JSON API endpoint |
 | `home-assistant` | Home & IoT | Smart home entities |
+| `host-windows` | System & Monitoring | CPU, GPU, memory, disk, network, battery (Python bridge) |
 | `claude` | Cloud Services | Anthropic API usage, costs, and org data |
 
 ## Quick Start
@@ -27,7 +28,7 @@ echo '{"jsonrpc":"2.0","method":"getMetadata","params":{},"id":1}' | node plugin
 
 ## Building Your Own Plugin
 
-A collector plugin is a single JavaScript file (`dist/index.js`) that the Server spawns as a subprocess. It reads JSON-RPC requests from stdin and writes responses to stdout.
+A collector plugin is a single JavaScript file (`dist/index.js`) that the host spawns as a subprocess. It reads JSON-RPC requests from stdin and writes responses to stdout.
 
 ### Minimal Example
 
@@ -55,7 +56,7 @@ Create a directory under `plugins/` with three files:
 }
 ```
 
-The `junctionrelay` block is required — this is how the Server discovers your plugin:
+The `junctionrelay` block is required — this is how the host discovers your plugin:
 - `type` must be `"collector"`
 - `entry` points to the built JavaScript bundle
 
@@ -174,23 +175,24 @@ npm install
 npm run build
 ```
 
-### Deploying to the Server
+### Deploying a Plugin
 
-The Server loads plugins from its configured `PluginsDirectory`. Each plugin is a folder containing a `package.json` and a `dist/index.js`.
-
-**For development** — Point the Server's `PluginsDirectory` at this monorepo's `plugins/` directory in `appsettings.Development.json`. Your plugin is picked up immediately on restart.
-
-**For production / Docker** — Copy your built plugin folder into the Server's plugins directory:
+Place your built plugin folder in the collectors directory. Each plugin is a folder containing a `package.json` and a `dist/index.js`:
 
 ```
-plugins/
+collectors/
 ├── my-plugin/
 │   ├── package.json        ← must have junctionrelay.type = "collector"
 │   └── dist/
 │       └── index.js         ← the esbuild bundle
 ```
 
-That's it. The Server auto-discovers the `package.json`, spawns `node dist/index.js`, calls `getMetadata()`, and registers your plugin. The UI renders the configuration form, setup instructions, and sensor display automatically from your metadata.
+**Plugin locations:**
+- **Server (Windows):** `%APPDATA%/JunctionRelay/collectors/`
+- **Server (Docker):** `/app/data/collectors/` (bundled plugins are pre-populated on first start)
+- **XSD:** Plugins are discovered automatically from the app's collectors directory
+
+The host auto-discovers the `package.json`, spawns `node dist/index.js`, calls `getMetadata()`, and registers your plugin. The UI renders the configuration form, setup instructions, and sensor display automatically from your metadata.
 
 ## Plugin API Reference
 
@@ -228,8 +230,8 @@ All handlers are optional. The SDK provides sensible defaults (return `{ success
 |--------|-----------|------------|
 | `configure` | `(params: ConfigureParams) => Promise<ConfigureResult>` | User saves collector settings |
 | `testConnection` | `(config: ConfigureParams) => Promise<TestConnectionResult>` | User clicks "Test Connection" |
-| `fetchSensors` | `(config: ConfigureParams) => Promise<FetchSensorsResult>` | Server polls for data |
-| `fetchSelectedSensors` | `(config: ConfigureParams, params: FetchSelectedSensorsParams) => Promise<FetchSensorsResult>` | Server polls for specific sensors only |
+| `fetchSensors` | `(config: ConfigureParams) => Promise<FetchSensorsResult>` | Host polls for data |
+| `fetchSelectedSensors` | `(config: ConfigureParams, params: FetchSelectedSensorsParams) => Promise<FetchSensorsResult>` | Host polls for specific sensors only |
 | `startSession` | `(config: ConfigureParams) => Promise<SessionResult>` | Persistent connection collectors |
 | `stopSession` | `(config: ConfigureParams) => Promise<SessionResult>` | Persistent connection collectors |
 
@@ -281,7 +283,7 @@ sanitizeSensorValue(3.14159, 2)   // → { value: "3.14", decimalPlaces: 2 }
 ## How It Works
 
 ```
-Server                              Plugin (subprocess)
+Host (Server or XSD)                Plugin (subprocess)
   │                                     │
   ├── Discovers package.json ───────────┤
   ├── Spawns: node dist/index.js        │
@@ -296,7 +298,7 @@ Server                              Plugin (subprocess)
 ```
 
 - Communication is **JSON-RPC 2.0** over stdin/stdout (one JSON object per line)
-- Plugins log to **stderr** (the Server captures these as plugin logs)
+- Plugins log to **stderr** (the host captures these as plugin logs)
 - The SDK handles all JSON-RPC parsing, dispatching, and error handling — you just implement the handler functions
 - Plugins are auto-restarted up to 3 times on unexpected exit
 
@@ -306,13 +308,13 @@ Server                              Plugin (subprocess)
 JunctionRelay_Collectors/
 ├── packages/
 │   ├── protocol/     ← TypeScript types and constants (JSON-RPC, SensorResult, etc.)
-│   ├── sdk/          ← CollectorPlugin class + helpers (what plugins import)
-│   └── host/         ← PluginHost runtime (used by the Server to manage plugins)
+│   └── sdk/          ← CollectorPlugin class + helpers (what plugins import)
 └── plugins/
     ├── system-time/
     ├── internet-time/
     ├── generic-api/
     ├── home-assistant/
+    ├── host-windows/
     └── claude/
 ```
 
@@ -323,6 +325,6 @@ You don't have to develop inside this monorepo. You can build a plugin anywhere 
 1. Copy any existing plugin as a starting point
 2. Install the SDK: `npm install @junctionrelay/collector-sdk`
 3. Write your plugin, bundle with esbuild (or any bundler that outputs a single ESM file)
-4. Place the resulting folder in the Server's `PluginsDirectory`
+4. Place the resulting folder in the collectors directory
 
 The bundle must be a self-contained ESM file (`--platform=node --format=esm`). No `node_modules` needed at runtime — esbuild bundles the SDK into your output.
