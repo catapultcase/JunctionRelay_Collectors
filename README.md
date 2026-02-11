@@ -190,7 +190,7 @@ collectors/
 **Plugin locations:**
 - **Server (Windows):** `%APPDATA%/JunctionRelay/collectors/`
 - **Server (Docker):** `/app/data/collectors/` (bundled plugins are pre-populated on first start)
-- **XSD:** Plugins are discovered automatically from the app's collectors directory
+- **XSD (Windows):** `%APPDATA%/JunctionRelay_XSD/collectors/`
 
 The host auto-discovers the `package.json`, spawns `node dist/index.js`, calls `getMetadata()`, and registers your plugin. The UI renders the configuration form, setup instructions, and sensor display automatically from your metadata.
 
