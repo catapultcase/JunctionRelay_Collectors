@@ -1,7 +1,7 @@
 {
-  "name": "@junctionrelay/plugin-system-time",
+  "name": "@junctionrelay/plugin-claude",
   "version": "1.0.0",
-  "description": "System time collector plugin for JunctionRelay",
+  "description": "Claude (Anthropic) API usage, costs, and organization monitoring plugin for JunctionRelay",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -25,10 +25,5 @@
   "dependencies": {
     "@junctionrelay/collector-sdk": "1.0.0"
   },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/catapultcase/JunctionRelay_Collectors.git",
-    "directory": "plugins/system-time"
-  }
+  "license": "MIT"
 }
