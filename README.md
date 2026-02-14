@@ -4,52 +4,39 @@ Plugin-based collector system for JunctionRelay. Each collector is a standalone 
 
 Plugins are discovered automatically — no host code changes required. Place a built plugin folder in the collectors directory, restart the app, and it appears in the UI.
 
-## Pre-bundled Runtimes
+## Repository Structure
 
-Server and XSD ship with these runtimes — plugins can rely on them without bundling their own:
-
-| Runtime | Version | Included Libraries |
-|---------|---------|-------------------|
-| Node.js | 20 LTS | (plugin host — always available) |
-| Python | 3.11 | psutil, GPUtil |
-
-Native binaries shipped with the platform: `gpu-reader.exe` (Windows, AMD/Intel GPU).
-
-## Included Plugins
-
-| Plugin | Category | Description |
-|--------|----------|-------------|
-| `system-time` | System & Testing | Local system clock |
-| `internet-time` | System & Testing | UTC time from internet sources |
-| `generic-api` | System & Testing | Any JSON API endpoint |
-| `home-assistant` | Home & IoT | Smart home entities |
-| `host-windows` | System & Monitoring | CPU, GPU, memory, disk, network, battery |
-| `claude` | Cloud Services | Anthropic API usage, costs, and org data |
-
-## Quick Start
-
-```bash
-# Install dependencies and build all plugins
-npm install
-npm run build
-
-# Test a plugin manually
-echo '{"jsonrpc":"2.0","method":"getMetadata","params":{},"id":1}' | node plugins/system-time/dist/index.js
+```
+packages/
+  protocol/   @junctionrelay/collector-protocol — types, interfaces, constants
+  sdk/        @junctionrelay/collector-sdk — CollectorPluginConfig type + helpers
+plugins/
+  system-time/      System & Testing — local system clock
+  internet-time/    System & Testing — UTC time from internet sources
+  generic-api/      System & Testing — any JSON API endpoint
+  home-assistant/   Home & IoT — smart home entities
+  host-windows/     System & Monitoring — CPU, GPU, memory, disk, network, battery
+  claude/           Cloud Services — Anthropic API usage, costs, and org data
 ```
 
-## Building Your Own Plugin
+## Creating a Plugin
 
-A collector plugin is a single JavaScript file (`dist/index.js`) that the host spawns as a subprocess. It reads JSON-RPC requests from stdin and writes responses to stdout.
+### 1. Copy the reference plugin
 
-### Minimal Example
+Copy `plugins/system-time/` to a new folder. This can be anywhere on your filesystem — plugins do NOT need to live inside this monorepo.
 
-Create a directory under `plugins/` with three files:
+```bash
+cp -r plugins/system-time /path/to/my-plugin
+cd /path/to/my-plugin
+```
 
-#### `plugins/my-plugin/package.json`
+### 2. Edit `package.json`
+
+Update the `junctionrelay` manifest — this is how the host app discovers your plugin:
 
 ```json
 {
-  "name": "@junctionrelay/plugin-my-plugin",
+  "name": "@yourname/plugin-my-thing",
   "version": "1.0.0",
   "description": "My custom collector plugin",
   "type": "module",
@@ -67,49 +54,90 @@ Create a directory under `plugins/` with three files:
 }
 ```
 
-The `junctionrelay` block is required — this is how the host discovers your plugin:
-- `type` must be `"collector"`
-- `entry` points to the built JavaScript bundle
+**Required manifest fields:**
+- `junctionrelay.type` must be `"collector"`
+- `junctionrelay.entry` points to the built JavaScript bundle
 
-#### `plugins/my-plugin/tsconfig.json`
+### 3. Write your plugin
 
-```json
-{
-  "extends": "../../tsconfig.build.json",
-  "compilerOptions": { "outDir": "dist", "rootDir": "src" },
-  "include": ["src"]
-}
+A plugin exports a default config object with metadata and handler functions:
+
+**`src/index.ts`** — simple plugin (no configuration needed):
+```typescript
+import type { CollectorPluginConfig, SensorResult } from '@junctionrelay/collector-sdk';
+
+export default {
+  metadata: {
+    collectorName: 'MyPlugin',
+    displayName: 'My Plugin',
+    description: 'What this collects',
+    category: 'System & Testing',
+    emoji: '🔧',
+    fields: {
+      requiresUrl: false,
+      requiresAccessToken: false,
+    },
+    defaults: {
+      name: 'My Plugin',
+      pollRate: 10000,
+      sendRate: 5000,
+    },
+    setupInstructions: [
+      {
+        title: 'No configuration needed',
+        body: 'This plugin works out of the box.',
+      },
+    ],
+  },
+
+  async fetchSensors() {
+    const sensors: SensorResult[] = [
+      {
+        uniqueSensorKey: 'my_value',
+        name: 'My Value',
+        value: String(42),
+        unit: 'count',
+        category: 'Stats',
+        decimalPlaces: 0,
+        sensorType: 'Numeric',
+        componentName: 'MyPlugin',
+        sensorTag: 'MyValue',
+      },
+    ];
+    return { sensors };
+  },
+
+  async testConnection() {
+    return { success: true };
+  },
+} satisfies CollectorPluginConfig;
 ```
 
-#### `plugins/my-plugin/src/index.ts`
-
+**`src/index.ts`** — plugin with URL and API key:
 ```typescript
-import { CollectorPlugin } from '@junctionrelay/collector-sdk';
-import type { SensorResult, ConfigureParams } from '@junctionrelay/collector-sdk';
+import type { CollectorPluginConfig, SensorResult, ConfigureParams } from '@junctionrelay/collector-sdk';
+import { getDecimalPlaces } from '@junctionrelay/collector-sdk';
 
-let apiUrl = '';
-let token = '';
-
-new CollectorPlugin({
+export default {
   metadata: {
-    collectorName: 'MyPlugin',       // Internal identifier (no spaces)
-    displayName: 'My Plugin',        // Shown in the UI
-    description: 'What this collects',
-    category: 'Cloud Services',      // Groups plugins in the UI
+    collectorName: 'MyAPI',
+    displayName: 'My API',
+    description: 'Collects data from an API',
+    category: 'Cloud Services',
     emoji: '📡',
     fields: {
-      requiresUrl: true,             // Show URL input in the UI
-      requiresAccessToken: true,     // Show token input in the UI
+      requiresUrl: true,
+      requiresAccessToken: true,
       urlLabel: 'API Endpoint',
       urlPlaceholder: 'https://api.example.com',
       accessTokenLabel: 'API Key',
       accessTokenPlaceholder: 'key_...',
     },
     defaults: {
-      name: 'My Plugin',
+      name: 'My API',
       url: 'https://api.example.com',
-      pollRate: 30000,               // How often to poll (ms)
-      sendRate: 5000,                // How often to push to devices (ms)
+      pollRate: 30000,
+      sendRate: 5000,
     },
     setupInstructions: [
       {
@@ -119,18 +147,14 @@ new CollectorPlugin({
     ],
   },
 
-  async configure(params: ConfigureParams) {
-    apiUrl = (params.url ?? '').replace(/\/$/, '');
-    token = params.accessToken ?? '';
-    return { success: true };
-  },
-
-  async testConnection() {
-    if (!apiUrl || !token) {
+  async testConnection(config: ConfigureParams) {
+    const url = config.url?.replace(/\/$/, '') ?? '';
+    const token = config.accessToken ?? '';
+    if (!url || !token) {
       return { success: false, error: 'URL and API key are required' };
     }
     try {
-      const resp = await fetch(`${apiUrl}/health`, {
+      const resp = await fetch(`${url}/health`, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
       return resp.ok
@@ -141,10 +165,12 @@ new CollectorPlugin({
     }
   },
 
-  async fetchSensors() {
-    if (!apiUrl || !token) throw new Error('Not configured');
+  async fetchSensors(config: ConfigureParams) {
+    const url = config.url?.replace(/\/$/, '') ?? '';
+    const token = config.accessToken ?? '';
+    if (!url || !token) throw new Error('Not configured');
 
-    const resp = await fetch(`${apiUrl}/data`, {
+    const resp = await fetch(`${url}/data`, {
       headers: { 'Authorization': `Bearer ${token}` },
     });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
@@ -157,7 +183,7 @@ new CollectorPlugin({
         value: String(data.count),
         unit: 'count',
         category: 'Stats',
-        decimalPlaces: 0,
+        decimalPlaces: getDecimalPlaces(String(data.count)),
         sensorType: 'Numeric',
         componentName: 'Stats',
         sensorTag: 'Item Count',
@@ -176,52 +202,16 @@ new CollectorPlugin({
     ];
     return { sensors };
   },
-});
+} satisfies CollectorPluginConfig;
 ```
 
-Build it:
+**Key points:**
+- Plugins are **stateless** — no module-level variables. The host passes `config: ConfigureParams` (with `url`, `accessToken`, etc.) to every handler call.
+- The `CollectorPluginConfig` type is the full interface. Use `satisfies` for type checking without wrapping in a class.
+- All handlers are optional. The SDK provides defaults (`{ success: true }` or `{ sensors: [] }`).
+- `fetchSensors` receives `config` with the URL and token the user configured in the UI.
 
-```bash
-npm install
-npm run build
-```
-
-### Deploying a Plugin
-
-Place your built plugin folder in the collectors directory. Each plugin is a self-contained folder — everything it needs to run must be inside it:
-
-```
-collectors/
-├── my-plugin/
-│   ├── package.json        ← must have junctionrelay.type = "collector"
-│   ├── dist/
-│   │   └── index.js         ← the esbuild bundle
-│   ├── python/              ← (optional) bundled Python scripts
-│   └── binaries/            ← (optional) bundled runtimes or native binaries
-```
-
-**Plugins must be self-contained.** The user should be able to drop your plugin folder into the collectors directory and have it work immediately.
-
-**Pre-bundled runtimes:** Server and XSD ship with Node.js and Python 3.11 (with psutil and GPUtil). Your plugin can rely on these — no need to re-bundle them. npm dependencies are inlined by esbuild into `dist/index.js` at build time.
-
-**Runtime resolution chain:** When a plugin needs Python (or another runtime), it resolves using this priority:
-
-1. **Plugin-bundled** — `<plugin>/binaries/python/` (if present, takes priority — allows version override)
-2. **Server-bundled** — shared runtimes shipped with the Server/XSD install
-3. **System-installed** — falls back to system `python` on PATH
-
-If your plugin needs a specific runtime version or a dependency not included in the server bundle, bundle it in your plugin's `binaries/` directory and it will take priority.
-
-**Plugin locations:**
-- **Server (Windows):** `%APPDATA%/JunctionRelay/collectors/`
-- **Server (Docker):** `/app/data/collectors/` (bundled plugins are pre-populated on first start)
-- **XSD (Windows):** `%APPDATA%/JunctionRelay_XSD/collectors/`
-
-The host auto-discovers the `package.json`, spawns `node dist/index.js`, calls `getMetadata()`, and registers your plugin. The UI renders the configuration form, setup instructions, and sensor display automatically from your metadata.
-
-## Plugin API Reference
-
-### Metadata
+### Metadata reference
 
 The `metadata` object defines how your plugin appears in the UI and what configuration fields are shown.
 
@@ -230,13 +220,13 @@ The `metadata` object defines how your plugin appears in the UI and what configu
 | `collectorName` | `string` | Internal identifier, no spaces (e.g., `"MyPlugin"`) |
 | `displayName` | `string` | Human-readable name shown in the UI |
 | `description` | `string` | Short description |
-| `category` | `string` | UI grouping (e.g., `"Cloud Services"`, `"Home & IoT"`) |
+| `category` | `string` | UI grouping (e.g., `"Cloud Services"`, `"Home & IoT"`, `"System & Testing"`) |
 | `emoji` | `string` | Icon shown next to the plugin name |
 | `fields` | `object` | Configuration field requirements (see below) |
 | `defaults` | `object` | Default values for name, URL, poll/send rates |
 | `setupInstructions` | `array` | Steps shown to the user during setup |
 
-#### `fields`
+**`fields`:**
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -247,9 +237,9 @@ The `metadata` object defines how your plugin appears in the UI and what configu
 | `accessTokenLabel` | `string?` | Label for the token field |
 | `accessTokenPlaceholder` | `string?` | Placeholder text for the token field |
 
-### Handler Methods
+### Handler methods
 
-All handlers are optional. The SDK provides sensible defaults (return `{ success: true }` or `{ sensors: [] }`).
+All handlers are optional. The host passes `config: ConfigureParams` to every call.
 
 | Method | Signature | Called When |
 |--------|-----------|------------|
@@ -264,7 +254,7 @@ If you don't implement `fetchSelectedSensors`, the SDK automatically falls back 
 
 ### `ConfigureParams`
 
-Passed to `configure` and made available to all subsequent handler calls:
+Passed to every handler by the host runtime:
 
 ```typescript
 interface ConfigureParams {
@@ -307,7 +297,7 @@ interface SensorResult {
 | `componentName` | `ComponentName` | Source component — helps distinguish sensors when a collector has multiple sub-sources |
 | `sensorTag` | `SensorTag` | Tag for sensor dictionary matching. Dictionary-mapped plugins use standard tags (e.g., `cpu_usage_total`). Generic plugins can use any string. |
 
-### SDK Helpers
+### SDK helpers
 
 The SDK exports helper functions for consistent numeric formatting:
 
@@ -319,13 +309,59 @@ safeRound(3.14159, 2)             // → 3.14
 sanitizeSensorValue(3.14159, 2)   // → { value: "3.14", decimalPlaces: 2 }
 ```
 
+### 4. Build
+
+```bash
+npm install
+npm run build
+```
+
+This runs esbuild to produce `dist/index.js` — a single ESM bundle with all npm dependencies inlined. No `node_modules` needed at runtime.
+
+**Using `.js` instead of `.ts`:** Both work. If you use `.js`, change the build script to `esbuild src/index.js --bundle ...` and drop the TypeScript dependency. You lose type checking but the plugin still works identically.
+
+**Standalone plugins** (outside this monorepo): If your plugin is NOT inside this monorepo, the `@junctionrelay/collector-sdk` dependency in `package.json` won't resolve from npm (it's not published). That's fine — esbuild bundles everything, and the SDK types are only needed at build time. You can:
+1. Copy `packages/sdk/` and `packages/protocol/` locally and reference them via `file:` deps, or
+2. Copy just the type definitions you need (`CollectorPluginConfig`, `SensorResult`, `ConfigureParams`) inline and remove the SDK dependency entirely
+
+### 5. Deploy
+
+Copy your plugin folder (must include `package.json` and `dist/index.js`) to the collectors directory:
+
+| App | Path |
+|-----|------|
+| **Server (Windows)** | `%APPDATA%\JunctionRelay\collectors\` |
+| **Server (Docker)** | `/app/data/collectors/` |
+| **XSD (Windows)** | `%APPDATA%\JunctionRelay_XSD\collectors\` |
+
+Restart the app. Your plugin appears in the collector list with the emoji, name, and description from the metadata. The UI renders the configuration form, setup instructions, and sensor display automatically.
+
+## Pre-bundled Runtimes
+
+Server and XSD ship with these runtimes — plugins can rely on them without bundling their own:
+
+| Runtime | Version | Included Libraries |
+|---------|---------|-------------------|
+| Node.js | 20 LTS | (plugin host — always available) |
+| Python | 3.11 | psutil, GPUtil |
+
+Native binaries shipped with the platform: `gpu-reader.exe` (Windows, AMD/Intel GPU).
+
+**Runtime resolution chain:** When a plugin needs Python (or another runtime), it resolves using this priority:
+
+1. **Plugin-bundled** — `<plugin>/binaries/python/` (if present, takes priority — allows version override)
+2. **Server-bundled** — shared runtimes shipped with the Server/XSD install
+3. **System-installed** — falls back to system `python` on PATH
+
+If your plugin needs a specific runtime version or a dependency not included in the server bundle, bundle it in your plugin's `binaries/` directory and it will take priority.
+
 ## How It Works
 
 ```
 Host (Server or XSD)                Plugin (subprocess)
   │                                     │
   ├── Discovers package.json ───────────┤
-  ├── Spawns: node dist/index.js        │
+  ├── Spawns: node rpc-host.mjs dist/index.js
   │                                     ├── Prints "[plugin] ready" to stderr
   ├── stdin: getMetadata ──────────────►│
   │◄──────────────────── stdout: {...} ─┤
@@ -338,32 +374,34 @@ Host (Server or XSD)                Plugin (subprocess)
 
 - Communication is **JSON-RPC 2.0** over stdin/stdout (one JSON object per line)
 - Plugins log to **stderr** (the host captures these as plugin logs)
-- The SDK handles all JSON-RPC parsing, dispatching, and error handling — you just implement the handler functions
+- The SDK handles all JSON-RPC parsing, dispatching, and error handling — you just export a config object with handler functions
 - Plugins are auto-restarted up to 3 times on unexpected exit
 
-## Project Structure
+## Using Third-Party Libraries
 
-```
-JunctionRelay_Collectors/
-├── packages/
-│   ├── protocol/     ← TypeScript types and constants (JSON-RPC, SensorResult, etc.)
-│   └── sdk/          ← CollectorPlugin class + helpers (what plugins import)
-└── plugins/
-    ├── system-time/
-    ├── internet-time/
-    ├── generic-api/
-    ├── home-assistant/
-    ├── host-windows/
-    └── claude/
+Any npm package can be used — esbuild bundles it into your `dist/index.js` automatically. Just install it and import it:
+
+```bash
+npm install node-fetch
 ```
 
-## Building Without the Monorepo
+```typescript
+import fetch from 'node-fetch';  // Bundled into dist/index.js
+```
 
-You don't have to develop inside this monorepo. You can build a plugin anywhere — the only requirement is that the final output is a fully self-contained folder.
+Since plugins run as Node.js subprocesses (not in a browser), there are no shared dependencies to externalize. Everything gets bundled.
 
-1. Copy any existing plugin as a starting point
-2. Install the SDK: `npm install @junctionrelay/collector-sdk`
-3. Write your plugin, bundle with esbuild (or any bundler that outputs a single ESM file)
-4. Place the resulting folder in the collectors directory
+## Quick Start (Testing)
 
-The bundle must be a self-contained ESM file (`--platform=node --format=esm`). esbuild inlines all npm dependencies into your output — no `node_modules` needed at runtime. If your plugin uses non-Node.js dependencies (Python, native binaries, etc.), bundle them inside your plugin folder.
+```bash
+# Install dependencies and build all plugins
+npm install
+npm run build
+
+# Test a plugin manually via JSON-RPC
+echo '{"jsonrpc":"2.0","method":"getMetadata","params":{},"id":1}' | node packages/sdk/bin/rpc-host.mjs plugins/system-time/dist/index.js
+```
+
+## License
+
+MIT
