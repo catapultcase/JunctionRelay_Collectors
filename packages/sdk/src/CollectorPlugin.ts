@@ -11,7 +11,7 @@ import type {
   JsonRpcRequest,
   JsonRpcResponse,
 } from '@junctionrelay/collector-protocol';
-import { JSON_RPC_ERRORS } from '@junctionrelay/collector-protocol';
+import { JSON_RPC_ERRORS, PLUGIN_ID_PATTERN } from '@junctionrelay/collector-protocol';
 
 export interface CollectorPluginConfig {
   metadata: CollectorMetadata;
@@ -30,6 +30,12 @@ export class CollectorPlugin {
   private currentConfig: ConfigureParams = { collectorId: 0 };
 
   constructor(config: CollectorPluginConfig) {
+    const name = config.metadata.collectorName;
+    if (!PLUGIN_ID_PATTERN.test(name)) {
+      throw new Error(
+        `collectorName '${name}' must be namespaced dot-notation (e.g. 'junctionrelay.system-time')`,
+      );
+    }
     this.config = config;
     this.startTime = Date.now();
   }

@@ -116,7 +116,7 @@ async function getUtcTimeFromInternet(): Promise<{ time: Date; source: string }>
 
 export default {
   metadata: {
-    collectorName: 'InternetTime',
+    collectorName: 'junctionrelay.internet-time',
     displayName: 'Internet Time',
     description: 'Accurate time from internet sources',
     category: 'System & Testing',

@@ -49,7 +49,7 @@ function extractConfig(config: ConfigureParams): { apiUrl: string; accessToken: 
 
 export default {
   metadata: {
-    collectorName: 'GenericAPI',
+    collectorName: 'junctionrelay.generic-api',
     displayName: 'Generic API',
     description: 'Process JSON via AccessToken',
     category: 'System & Testing',

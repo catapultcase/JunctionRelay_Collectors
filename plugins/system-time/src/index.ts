@@ -2,7 +2,7 @@ import type { CollectorPluginConfig, SensorResult } from '@junctionrelay/collect
 
 export default {
   metadata: {
-    collectorName: 'SystemTime',
+    collectorName: 'junctionrelay.system-time',
     displayName: 'System Time',
     description: 'Local system date and time',
     category: 'System & Testing',

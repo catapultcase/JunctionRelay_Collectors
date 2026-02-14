@@ -309,7 +309,7 @@ process.on('exit', () => stopPython());
 
 export default {
   metadata: {
-    collectorName: 'HostWindows',
+    collectorName: 'junctionrelay.host-windows',
     displayName: 'Host Sensors (Windows)',
     description:
       'CPU, GPU, memory, disk, network, and battery monitoring using psutil',

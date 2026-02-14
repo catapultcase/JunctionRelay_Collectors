@@ -4,6 +4,25 @@
 
 export const PROTOCOL_VERSION = '1.0.0';
 
+/**
+ * Regex for validating namespaced plugin identifiers.
+ * Format: `<namespace>.<name>` — both segments lowercase kebab-case.
+ * Examples: `junctionrelay.system-time`, `catapultcase.my-collector`
+ *
+ * Native/built-in collector types (Cloudflare, Host, HWiNFO, etc.) do NOT
+ * use this pattern — they remain un-namespaced. Only plugin collector types
+ * require the dot-separated namespace.
+ */
+export const PLUGIN_ID_PATTERN = /^[a-z][a-z0-9]*(-[a-z0-9]+)*\.[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
+
+/**
+ * Returns true if the given collector name is a plugin (has a dot namespace).
+ * Native built-in types like 'Cloudflare', 'Host', 'HWiNFO' return false.
+ */
+export function isPluginCollectorName(id: string): boolean {
+  return id.includes('.');
+}
+
 export const MAX_DECIMAL_PLACES = 15;
 
 export const JSON_RPC_ERRORS = {
@@ -67,6 +86,11 @@ export interface SetupStep {
 }
 
 export interface CollectorMetadata {
+  /**
+   * Unique collector identifier. Plugin collectors must use namespaced
+   * dot-notation matching PLUGIN_ID_PATTERN (e.g. 'junctionrelay.system-time').
+   * Native built-in collectors use un-namespaced PascalCase names.
+   */
   collectorName: string;
   displayName: string;
   description: string;

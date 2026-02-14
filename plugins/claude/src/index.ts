@@ -74,7 +74,7 @@ interface CostResponse {
 
 export default {
   metadata: {
-    collectorName: 'Claude',
+    collectorName: 'junctionrelay.claude',
     displayName: 'Claude (Anthropic)',
     description: 'API usage, costs, and organization monitoring',
     category: 'Cloud Services',

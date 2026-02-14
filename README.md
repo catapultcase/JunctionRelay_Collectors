@@ -58,6 +58,8 @@ Update the `junctionrelay` manifest — this is how the host app discovers your 
 - `junctionrelay.type` must be `"collector"`
 - `junctionrelay.entry` points to the built JavaScript bundle
 
+**`collectorName` namespacing:** Plugin collector names must use `<namespace>.<name>` dot-notation where both segments are lowercase kebab-case (e.g. `yourname.my-plugin`, `junctionrelay.system-time`). This prevents collisions between plugins and built-in native collectors (`Cloudflare`, `Host`, `HWiNFO`, etc.), which are un-namespaced. The regex is exported as `PLUGIN_ID_PATTERN` from `@junctionrelay/collector-protocol`.
+
 ### 3. Write your plugin
 
 A plugin exports a default config object with metadata and handler functions:
@@ -68,7 +70,7 @@ import type { CollectorPluginConfig, SensorResult } from '@junctionrelay/collect
 
 export default {
   metadata: {
-    collectorName: 'MyPlugin',
+    collectorName: 'yourname.my-plugin',
     displayName: 'My Plugin',
     description: 'What this collects',
     category: 'System & Testing',
@@ -120,7 +122,7 @@ import { getDecimalPlaces } from '@junctionrelay/collector-sdk';
 
 export default {
   metadata: {
-    collectorName: 'MyAPI',
+    collectorName: 'yourname.my-api',
     displayName: 'My API',
     description: 'Collects data from an API',
     category: 'Cloud Services',
@@ -217,7 +219,7 @@ The `metadata` object defines how your plugin appears in the UI and what configu
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `collectorName` | `string` | Internal identifier, no spaces (e.g., `"MyPlugin"`) |
+| `collectorName` | `string` | Namespaced identifier in `<namespace>.<name>` dot-notation (e.g., `"yourname.my-plugin"`) |
 | `displayName` | `string` | Human-readable name shown in the UI |
 | `description` | `string` | Short description |
 | `category` | `string` | UI grouping (e.g., `"Cloud Services"`, `"Home & IoT"`, `"System & Testing"`) |

@@ -52,7 +52,7 @@ function extractConfig(config: ConfigureParams): { baseUrl: string; token: strin
 
 export default {
   metadata: {
-    collectorName: 'HomeAssistant',
+    collectorName: 'junctionrelay.home-assistant',
     displayName: 'Home Assistant',
     description: 'Smart home automation',
     category: 'Home & IoT',
