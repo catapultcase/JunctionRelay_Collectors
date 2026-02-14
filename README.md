@@ -326,15 +326,25 @@ This runs esbuild to produce `dist/index.js` — a single ESM bundle with all np
 1. Copy `packages/sdk/` and `packages/protocol/` locally and reference them via `file:` deps, or
 2. Copy just the type definitions you need (`CollectorPluginConfig`, `SensorResult`, `ConfigureParams`) inline and remove the SDK dependency entirely
 
-### 5. Deploy
+### 5. Pack and Deploy
 
-Copy your plugin folder (must include `package.json` and `dist/index.js`) to the collectors directory:
+After building, create a distributable `.zip`:
+
+```bash
+npm run pack
+```
+
+This produces `<name>.zip` containing `<name>/package.json` and `<name>/dist/index.js`. All built-in plugins include this script.
+
+Drop the `.zip` file into the collectors directory:
 
 | App | Path |
 |-----|------|
 | **Server (Windows)** | `%APPDATA%\JunctionRelay\collectors\` |
 | **Server (Docker)** | `/app/data/collectors/` |
 | **XSD (Windows)** | `%APPDATA%\JunctionRelay_XSD\collectors\` |
+
+The app automatically extracts the zip on next startup and deletes the zip file. If a folder with the same name already exists, the zip is skipped — delete the existing folder first to re-install.
 
 Restart the app. Your plugin appears in the collector list with the emoji, name, and description from the metadata. The UI renders the configuration form, setup instructions, and sensor display automatically.
 

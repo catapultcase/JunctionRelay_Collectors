@@ -20,7 +20,8 @@
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",
-    "clean": "rm -rf dist"
+    "pack": "rm -rf out && mkdir -p out/host-windows/dist && cp package.json out/host-windows/ && cp dist/index.js out/host-windows/dist/ && cp -r python out/host-windows/ && cd out && zip -r ../host-windows.zip host-windows && cd .. && rm -rf out",
+    "clean": "rm -rf dist out"
   },
   "dependencies": {
     "@junctionrelay/collector-sdk": "1.0.0"
