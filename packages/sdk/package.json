@@ -19,7 +19,7 @@
     "bin"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node -e \"require('esbuild').buildSync({entryPoints:['bin/rpc-host.mjs'],bundle:true,platform:'node',format:'esm',outfile:'dist/rpc-host.mjs'})\"",
     "test": "npx tsx --test src/__tests__/*.test.ts",
     "clean": "rm -rf dist"
   },
