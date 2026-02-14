@@ -36,7 +36,8 @@
         "title": "No configuration needed",
         "body": "This collector reads the local system clock. No URL or credentials required. Provides both UTC and local time formats with timezone detection."
       }
-    ]
+    ],
+    "authorName": "JunctionRelay"
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",

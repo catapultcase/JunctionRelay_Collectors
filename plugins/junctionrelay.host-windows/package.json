@@ -41,7 +41,8 @@
         "body": "NVIDIA GPUs are detected via GPUtil. AMD/Intel GPUs on Windows use gpu-reader.exe (included in binaries/). On Linux, AMD GPUs are read via sysfs."
       }
     ],
-    "setupNote": "No configuration needed. The plugin automatically detects available hardware sensors."
+    "setupNote": "No configuration needed. The plugin automatically detects available hardware sensors.",
+    "authorName": "JunctionRelay"
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",

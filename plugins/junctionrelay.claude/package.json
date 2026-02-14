@@ -46,7 +46,8 @@
         "title": "Usage Data Delay",
         "body": "Usage and cost data may be delayed up to 5 minutes from Anthropic"
       }
-    ]
+    ],
+    "authorName": "JunctionRelay"
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",

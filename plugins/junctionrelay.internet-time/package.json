@@ -36,7 +36,8 @@
         "title": "No configuration needed",
         "body": "Automatically fetches accurate UTC time from multiple internet sources with smart caching and failover. Requires network connectivity."
       }
-    ]
+    ],
+    "authorName": "JunctionRelay"
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",

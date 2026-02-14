@@ -45,7 +45,8 @@
         "title": "Create Long-Lived Access Token",
         "body": "Go to **Profile** (click your name) → **Security** → Scroll to \"Long-lived access tokens\" → Click **Create Token** → Copy the generated token"
       }
-    ]
+    ],
+    "authorName": "JunctionRelay"
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",

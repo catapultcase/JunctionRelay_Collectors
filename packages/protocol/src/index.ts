@@ -187,6 +187,12 @@ export interface CollectorPluginManifest {
   supportsPersistentSession?: boolean;
   requiresService?: boolean;
   requiredServiceType?: string | null;
+
+  /** Plugin author name (e.g. 'JunctionRelay', 'CatapultCase'). */
+  authorName?: string;
+
+  /** Plugin author URL (e.g. homepage, GitHub profile). */
+  authorUrl?: string;
 }
 
 export interface DiscoveredPlugin {
