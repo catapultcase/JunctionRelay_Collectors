@@ -6,14 +6,18 @@
 // Node.js built-ins. Works on Windows, macOS, and Linux.
 
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'fs';
-import { join, basename, relative } from 'path';
+import { join, relative } from 'path';
 import { deflateRawSync } from 'zlib';
 
 const pluginDir = process.cwd();
 const pkg = JSON.parse(readFileSync(join(pluginDir, 'package.json'), 'utf8'));
 
-// Use collectorName from manifest if available, fallback to folder name
-const pluginName = pkg.junctionrelay?.collectorName || basename(pluginDir);
+const pluginName = pkg.junctionrelay?.collectorName;
+
+if (!pluginName) {
+  console.error('ERROR: package.json missing junctionrelay.collectorName');
+  process.exit(1);
+}
 
 const distFile = join(pluginDir, 'dist', 'index.js');
 if (!existsSync(distFile)) {
