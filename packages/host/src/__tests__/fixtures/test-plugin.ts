@@ -1,6 +1,7 @@
 import { CollectorPlugin } from '@junctionrelay/collector-sdk';
+import type { CollectorPluginConfig } from '@junctionrelay/collector-sdk';
 
-new CollectorPlugin({
+const config: CollectorPluginConfig = {
   metadata: {
     collectorName: 'HostTestPlugin',
     displayName: 'Host Test Plugin',
@@ -36,4 +37,11 @@ new CollectorPlugin({
       ],
     };
   },
-});
+};
+
+// Export for in-process loading (XSD)
+export default config;
+
+// Start RPC when run as a process (via npx tsx or rpc-host.mjs)
+const plugin = new CollectorPlugin(config);
+plugin.startRpc();

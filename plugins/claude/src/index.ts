@@ -1,13 +1,11 @@
-import { CollectorPlugin, getDecimalPlaces } from '@junctionrelay/collector-sdk'
-import type { SensorResult, ConfigureParams } from '@junctionrelay/collector-sdk'
+import { getDecimalPlaces } from '@junctionrelay/collector-sdk'
+import type { CollectorPluginConfig, SensorResult, ConfigureParams } from '@junctionrelay/collector-sdk'
 
 const BASE_URL = 'https://api.anthropic.com'
 const REQUEST_TIMEOUT_MS = 10000
 const API_VERSION = '2023-06-01'
 
-let adminKey = ''
-
-async function apiGet(path: string): Promise<unknown> {
+async function apiGet(path: string, adminKey: string): Promise<unknown> {
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
 
@@ -74,7 +72,7 @@ interface CostResponse {
   data?: CostBucket[]
 }
 
-new CollectorPlugin({
+export default {
   metadata: {
     collectorName: 'Claude',
     displayName: 'Claude (Anthropic)',
@@ -108,37 +106,38 @@ new CollectorPlugin({
     ],
   },
 
-  async configure(params: ConfigureParams) {
-    adminKey = params.accessToken ?? ''
+  async configure() {
     return { success: true }
   },
 
-  async testConnection() {
+  async testConnection(config: ConfigureParams) {
+    const adminKey = config.accessToken ?? ''
     if (!adminKey) {
       return { success: false, error: 'Admin API key is required' }
     }
 
     try {
-      await apiGet('/v1/organizations/me')
+      await apiGet('/v1/organizations/me', adminKey)
       return { success: true }
     } catch (err) {
       return { success: false, error: err instanceof Error ? err.message : String(err) }
     }
   },
 
-  async fetchSensors() {
-    if (!adminKey) throw new Error('Not configured \u2014 call configure first')
+  async fetchSensors(config: ConfigureParams) {
+    const adminKey = config.accessToken ?? ''
+    if (!adminKey) throw new Error('Not configured \u2014 Admin API key is required')
 
     const sensors: SensorResult[] = []
     const { startingAt, endingAt } = getTodayRange()
 
     // Fetch all endpoints in parallel, catching individual failures
     const [orgResult, workspacesResult, apiKeysResult, usageResult, costResult] = await Promise.allSettled([
-      apiGet('/v1/organizations/me') as Promise<OrgResponse>,
-      apiGet('/v1/organizations/workspaces') as Promise<WorkspacesResponse>,
-      apiGet('/v1/organizations/api_keys') as Promise<ApiKeysResponse>,
-      apiGet(`/v1/organizations/usage_report/messages?starting_at=${startingAt}&ending_at=${endingAt}&bucket_width=1d`) as Promise<UsageResponse>,
-      apiGet(`/v1/organizations/cost_report?starting_at=${startingAt}&ending_at=${endingAt}&bucket_width=1d`) as Promise<CostResponse>,
+      apiGet('/v1/organizations/me', adminKey) as Promise<OrgResponse>,
+      apiGet('/v1/organizations/workspaces', adminKey) as Promise<WorkspacesResponse>,
+      apiGet('/v1/organizations/api_keys', adminKey) as Promise<ApiKeysResponse>,
+      apiGet(`/v1/organizations/usage_report/messages?starting_at=${startingAt}&ending_at=${endingAt}&bucket_width=1d`, adminKey) as Promise<UsageResponse>,
+      apiGet(`/v1/organizations/cost_report?starting_at=${startingAt}&ending_at=${endingAt}&bucket_width=1d`, adminKey) as Promise<CostResponse>,
     ])
 
     // Organization sensors
@@ -294,4 +293,4 @@ new CollectorPlugin({
 
     return { sensors }
   },
-})
+} satisfies CollectorPluginConfig

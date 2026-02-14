@@ -32,10 +32,14 @@ export class CollectorPlugin {
   constructor(config: CollectorPluginConfig) {
     this.config = config;
     this.startTime = Date.now();
-    this.start();
   }
 
-  private start(): void {
+  /**
+   * Start the JSON-RPC stdin/stdout listener.
+   * Called by rpc-host.mjs for Server's child-process mode.
+   * NOT called automatically — plugins are pure config exports.
+   */
+  startRpc(): void {
     const rl = readline.createInterface({
       input: process.stdin,
       terminal: false,

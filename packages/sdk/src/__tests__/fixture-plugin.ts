@@ -1,7 +1,8 @@
 import { CollectorPlugin } from '../CollectorPlugin.js';
+import type { CollectorPluginConfig } from '../CollectorPlugin.js';
 import type { ConfigureParams, FetchSensorsResult } from '@junctionrelay/collector-protocol';
 
-new CollectorPlugin({
+const config: CollectorPluginConfig = {
   metadata: {
     collectorName: 'TestPlugin',
     displayName: 'Test Plugin',
@@ -48,4 +49,8 @@ new CollectorPlugin({
       ],
     };
   },
-});
+};
+
+// In test mode, we start RPC directly (simulating what rpc-host.mjs does)
+const plugin = new CollectorPlugin(config);
+plugin.startRpc();

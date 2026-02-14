@@ -57,6 +57,20 @@ export class PluginHost {
     return this.process !== null && !this.process.killed;
   }
 
+  private findRpcHost(): string | null {
+    const rpcRelative = path.join('node_modules', '@junctionrelay', 'collector-sdk', 'bin', 'rpc-host.mjs');
+    let dir = this.pluginPath;
+    const root = path.parse(dir).root;
+    while (dir !== root) {
+      const candidate = path.join(dir, rpcRelative);
+      if (fs.existsSync(candidate)) {
+        return candidate;
+      }
+      dir = path.dirname(dir);
+    }
+    return null;
+  }
+
   async start(): Promise<void> {
     this.stopped = false;
     const pkgPath = path.join(this.pluginPath, 'package.json');
@@ -70,8 +84,27 @@ export class PluginHost {
 
   private async spawnProcess(entryPath: string): Promise<void> {
     const isTs = entryPath.endsWith('.ts');
-    const command = isTs ? 'npx' : 'node';
-    const args = isTs ? ['tsx', entryPath] : [entryPath];
+
+    let command: string;
+    let args: string[];
+
+    if (isTs) {
+      // For TypeScript source (dev mode), run directly via tsx
+      command = 'npx';
+      args = ['tsx', entryPath];
+    } else {
+      // For built plugins, spawn via rpc-host.mjs from collector-sdk
+      // Walk up from pluginPath checking node_modules at each level (handles npm workspace hoisting)
+      const rpcHostPath = this.findRpcHost();
+      if (rpcHostPath) {
+        command = 'node';
+        args = [rpcHostPath, entryPath];
+      } else {
+        // Fallback: try running entry directly (legacy plugins)
+        command = 'node';
+        args = [entryPath];
+      }
+    }
 
     this.process = spawn(command, args, {
       stdio: ['pipe', 'pipe', 'pipe'],

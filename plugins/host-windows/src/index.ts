@@ -3,7 +3,7 @@ import * as path from 'node:path';
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import {
-  CollectorPlugin,
+  type CollectorPluginConfig,
   type SensorResult,
   type ConfigureParams,
   getDecimalPlaces,
@@ -300,14 +300,14 @@ function mapSensors(metrics: PythonMetrics): SensorResult[] {
 }
 
 // ============================================================================
-// CollectorPlugin — plugin instantiation and JSON-RPC handlers
+// Plugin config export — stateless handlers, no auto-start
 // ============================================================================
 
 // Clean up Python on exit
 process.on('SIGTERM', () => stopPython());
 process.on('exit', () => stopPython());
 
-new CollectorPlugin({
+export default {
   metadata: {
     collectorName: 'HostWindows',
     displayName: 'Host Sensors (Windows)',
@@ -385,4 +385,4 @@ new CollectorPlugin({
     const sensors = mapSensors(result as PythonMetrics);
     return { sensors };
   },
-});
+} satisfies CollectorPluginConfig;

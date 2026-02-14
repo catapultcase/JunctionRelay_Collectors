@@ -1,8 +1,5 @@
-import { CollectorPlugin, getDecimalPlaces } from '@junctionrelay/collector-sdk';
-import type { SensorResult, ConfigureParams, FetchSelectedSensorsParams } from '@junctionrelay/collector-sdk';
-
-let baseUrl = '';
-let token = '';
+import { getDecimalPlaces } from '@junctionrelay/collector-sdk';
+import type { CollectorPluginConfig, SensorResult, ConfigureParams, FetchSelectedSensorsParams } from '@junctionrelay/collector-sdk';
 
 interface HAEntity {
   entity_id: string;
@@ -14,7 +11,7 @@ interface HAEntity {
   };
 }
 
-async function fetchStates(): Promise<HAEntity[]> {
+async function fetchStates(baseUrl: string, token: string): Promise<HAEntity[]> {
   const resp = await fetch(`${baseUrl}/api/states`, {
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -46,7 +43,14 @@ function entityToSensor(entity: HAEntity): SensorResult {
   };
 }
 
-new CollectorPlugin({
+function extractConfig(config: ConfigureParams): { baseUrl: string; token: string } {
+  const url = (config.url ?? '').trim();
+  const baseUrl = url.endsWith('/') ? url.slice(0, -1) : url;
+  const token = config.accessToken ?? '';
+  return { baseUrl, token };
+}
+
+export default {
   metadata: {
     collectorName: 'HomeAssistant',
     displayName: 'Home Assistant',
@@ -79,14 +83,12 @@ new CollectorPlugin({
     ],
   },
 
-  async configure(params: ConfigureParams) {
-    const url = (params.url ?? '').trim();
-    baseUrl = url.endsWith('/') ? url.slice(0, -1) : url;
-    token = params.accessToken ?? '';
+  async configure() {
     return { success: true };
   },
 
-  async testConnection() {
+  async testConnection(config: ConfigureParams) {
+    const { baseUrl, token } = extractConfig(config);
     if (!baseUrl || !token) {
       return { success: false, error: 'URL and access token are required' };
     }
@@ -108,19 +110,21 @@ new CollectorPlugin({
     }
   },
 
-  async fetchSensors() {
-    if (!baseUrl || !token) throw new Error('Not configured — call configure first');
-    const entities = await fetchStates();
+  async fetchSensors(config: ConfigureParams) {
+    const { baseUrl, token } = extractConfig(config);
+    if (!baseUrl || !token) throw new Error('Not configured — URL and access token are required');
+    const entities = await fetchStates(baseUrl, token);
     const sensors = entities.map(entityToSensor);
     return { sensors };
   },
 
   async fetchSelectedSensors(config: ConfigureParams, params: FetchSelectedSensorsParams) {
-    if (!baseUrl || !token) throw new Error('Not configured — call configure first');
-    const entities = await fetchStates();
+    const { baseUrl, token } = extractConfig(config);
+    if (!baseUrl || !token) throw new Error('Not configured — URL and access token are required');
+    const entities = await fetchStates(baseUrl, token);
     const sensors = entities
       .filter(e => params.sensorIds.includes(e.entity_id))
       .map(entityToSensor);
     return { sensors };
   },
-});
+} satisfies CollectorPluginConfig;

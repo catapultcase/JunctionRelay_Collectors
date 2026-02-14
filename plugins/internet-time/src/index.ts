@@ -1,5 +1,4 @@
-import { CollectorPlugin } from '@junctionrelay/collector-sdk';
-import type { SensorResult } from '@junctionrelay/collector-sdk';
+import type { CollectorPluginConfig, SensorResult } from '@junctionrelay/collector-sdk';
 
 const CACHE_MAX_AGE_MS = 5 * 60 * 1000; // 5 minutes
 const REQUEST_TIMEOUT_MS = 10000;
@@ -115,7 +114,7 @@ async function getUtcTimeFromInternet(): Promise<{ time: Date; source: string }>
   throw new Error('All time APIs failed and no valid cache available');
 }
 
-new CollectorPlugin({
+export default {
   metadata: {
     collectorName: 'InternetTime',
     displayName: 'Internet Time',
@@ -210,4 +209,4 @@ new CollectorPlugin({
     }
     return { success: false, error: 'Unable to reach time APIs' };
   },
-});
+} satisfies CollectorPluginConfig;

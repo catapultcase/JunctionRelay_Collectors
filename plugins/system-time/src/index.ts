@@ -1,7 +1,6 @@
-import { CollectorPlugin } from '@junctionrelay/collector-sdk';
-import type { SensorResult } from '@junctionrelay/collector-sdk';
+import type { CollectorPluginConfig, SensorResult } from '@junctionrelay/collector-sdk';
 
-new CollectorPlugin({
+export default {
   metadata: {
     collectorName: 'SystemTime',
     displayName: 'System Time',
@@ -111,4 +110,4 @@ new CollectorPlugin({
   async testConnection() {
     return { success: true };
   },
-});
+} satisfies CollectorPluginConfig;

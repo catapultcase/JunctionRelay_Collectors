@@ -11,8 +11,12 @@
       "import": "./dist/index.js"
     }
   },
+  "bin": {
+    "rpc-host": "./bin/rpc-host.mjs"
+  },
   "files": [
-    "dist"
+    "dist",
+    "bin"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",

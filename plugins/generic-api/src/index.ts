@@ -1,8 +1,5 @@
-import { CollectorPlugin, getDecimalPlaces } from '@junctionrelay/collector-sdk';
-import type { SensorResult, ConfigureParams } from '@junctionrelay/collector-sdk';
-
-let apiUrl = '';
-let accessToken = '';
+import { getDecimalPlaces } from '@junctionrelay/collector-sdk';
+import type { CollectorPluginConfig, SensorResult, ConfigureParams } from '@junctionrelay/collector-sdk';
 
 function determineUnit(key: string, value: unknown): string {
   const k = key.toLowerCase();
@@ -43,7 +40,14 @@ function formatValue(value: unknown): string {
   return String(value);
 }
 
-new CollectorPlugin({
+function extractConfig(config: ConfigureParams): { apiUrl: string; accessToken: string } {
+  const url = (config.url ?? '').trim();
+  const apiUrl = url.endsWith('/') ? url.slice(0, -1) : url;
+  const accessToken = config.accessToken ?? '';
+  return { apiUrl, accessToken };
+}
+
+export default {
   metadata: {
     collectorName: 'GenericAPI',
     displayName: 'Generic API',
@@ -80,14 +84,12 @@ new CollectorPlugin({
     ],
   },
 
-  async configure(params: ConfigureParams) {
-    const url = (params.url ?? '').trim();
-    apiUrl = url.endsWith('/') ? url.slice(0, -1) : url;
-    accessToken = params.accessToken ?? '';
+  async configure() {
     return { success: true };
   },
 
-  async testConnection() {
+  async testConnection(config: ConfigureParams) {
+    const { apiUrl, accessToken } = extractConfig(config);
     if (!apiUrl) {
       return { success: false, error: 'No URL configured' };
     }
@@ -116,8 +118,9 @@ new CollectorPlugin({
     }
   },
 
-  async fetchSensors() {
-    if (!apiUrl) throw new Error('Not configured — call configure first');
+  async fetchSensors(config: ConfigureParams) {
+    const { apiUrl, accessToken } = extractConfig(config);
+    if (!apiUrl) throw new Error('Not configured — URL is required');
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 30000);
@@ -172,4 +175,4 @@ new CollectorPlugin({
 
     return { sensors };
   },
-});
+} satisfies CollectorPluginConfig;
