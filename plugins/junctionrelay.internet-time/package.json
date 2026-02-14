@@ -20,7 +20,7 @@
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",
-    "pack": "rm -rf out && mkdir -p out/internet-time/dist && cp package.json out/internet-time/ && cp dist/index.js out/internet-time/dist/ && cd out && zip -r ../internet-time.zip internet-time && cd .. && rm -rf out",
+    "pack": "rm -rf out && mkdir -p out/junctionrelay.internet-time/dist && cp package.json out/junctionrelay.internet-time/ && cp dist/index.js out/junctionrelay.internet-time/dist/ && cd out && zip -r ../junctionrelay.internet-time.zip junctionrelay.internet-time && cd .. && rm -rf out",
     "clean": "rm -rf dist out"
   },
   "dependencies": {
@@ -30,6 +30,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/catapultcase/JunctionRelay_Collectors.git",
-    "directory": "plugins/internet-time"
+    "directory": "plugins/junctionrelay.internet-time"
   }
 }

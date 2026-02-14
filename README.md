@@ -11,22 +11,22 @@ packages/
   protocol/   @junctionrelay/collector-protocol — types, interfaces, constants
   sdk/        @junctionrelay/collector-sdk — CollectorPluginConfig type + helpers
 plugins/
-  system-time/      System & Testing — local system clock
-  internet-time/    System & Testing — UTC time from internet sources
-  generic-api/      System & Testing — any JSON API endpoint
-  home-assistant/   Home & IoT — smart home entities
-  host-windows/     System & Monitoring — CPU, GPU, memory, disk, network, battery
-  claude/           Cloud Services — Anthropic API usage, costs, and org data
+  junctionrelay.system-time/      System & Testing — local system clock
+  junctionrelay.internet-time/    System & Testing — UTC time from internet sources
+  junctionrelay.generic-api/      System & Testing — any JSON API endpoint
+  junctionrelay.home-assistant/   Home & IoT — smart home entities
+  junctionrelay.host-windows/     System & Monitoring — CPU, GPU, memory, disk, network, battery
+  junctionrelay.claude/           Cloud Services — Anthropic API usage, costs, and org data
 ```
 
 ## Creating a Plugin
 
 ### 1. Copy the reference plugin
 
-Copy `plugins/system-time/` to a new folder. This can be anywhere on your filesystem — plugins do NOT need to live inside this monorepo.
+Copy `plugins/junctionrelay.system-time/` to a new folder. This can be anywhere on your filesystem — plugins do NOT need to live inside this monorepo.
 
 ```bash
-cp -r plugins/system-time /path/to/my-plugin
+cp -r plugins/junctionrelay.system-time /path/to/my-plugin
 cd /path/to/my-plugin
 ```
 
@@ -411,7 +411,7 @@ npm install
 npm run build
 
 # Test a plugin manually via JSON-RPC
-echo '{"jsonrpc":"2.0","method":"getMetadata","params":{},"id":1}' | node packages/sdk/bin/rpc-host.mjs plugins/system-time/dist/index.js
+echo '{"jsonrpc":"2.0","method":"getMetadata","params":{},"id":1}' | node packages/sdk/bin/rpc-host.mjs plugins/junctionrelay.system-time/dist/index.js
 ```
 
 ## License

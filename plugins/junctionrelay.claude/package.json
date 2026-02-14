@@ -1,7 +1,7 @@
 {
-  "name": "@junctionrelay/plugin-generic-api",
+  "name": "@junctionrelay/plugin-claude",
   "version": "1.0.0",
-  "description": "Generic API collector plugin for JunctionRelay",
+  "description": "Claude (Anthropic) API usage, costs, and organization monitoring plugin for JunctionRelay",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,16 +20,11 @@
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",
-    "pack": "rm -rf out && mkdir -p out/generic-api/dist && cp package.json out/generic-api/ && cp dist/index.js out/generic-api/dist/ && cd out && zip -r ../generic-api.zip generic-api && cd .. && rm -rf out",
+    "pack": "rm -rf out && mkdir -p out/junctionrelay.claude/dist && cp package.json out/junctionrelay.claude/ && cp dist/index.js out/junctionrelay.claude/dist/ && cd out && zip -r ../junctionrelay.claude.zip junctionrelay.claude && cd .. && rm -rf out",
     "clean": "rm -rf dist out"
   },
   "dependencies": {
     "@junctionrelay/collector-sdk": "1.0.0"
   },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/catapultcase/JunctionRelay_Collectors.git",
-    "directory": "plugins/generic-api"
-  }
+  "license": "MIT"
 }

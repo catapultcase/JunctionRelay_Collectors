@@ -1,7 +1,7 @@
 {
-  "name": "@junctionrelay/plugin-host-windows",
+  "name": "@junctionrelay/plugin-generic-api",
   "version": "1.0.0",
-  "description": "Host system metrics collector plugin for JunctionRelay (Windows)",
+  "description": "Generic API collector plugin for JunctionRelay",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,7 +20,7 @@
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",
-    "pack": "rm -rf out && mkdir -p out/host-windows/dist && cp package.json out/host-windows/ && cp dist/index.js out/host-windows/dist/ && cp -r python out/host-windows/ && cd out && zip -r ../host-windows.zip host-windows && cd .. && rm -rf out",
+    "pack": "rm -rf out && mkdir -p out/junctionrelay.generic-api/dist && cp package.json out/junctionrelay.generic-api/ && cp dist/index.js out/junctionrelay.generic-api/dist/ && cd out && zip -r ../junctionrelay.generic-api.zip junctionrelay.generic-api && cd .. && rm -rf out",
     "clean": "rm -rf dist out"
   },
   "dependencies": {
@@ -30,6 +30,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/catapultcase/JunctionRelay_Collectors.git",
-    "directory": "plugins/host-windows"
+    "directory": "plugins/junctionrelay.generic-api"
   }
 }

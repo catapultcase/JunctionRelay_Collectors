@@ -1,7 +1,7 @@
 {
-  "name": "@junctionrelay/plugin-home-assistant",
+  "name": "@junctionrelay/plugin-host-windows",
   "version": "1.0.0",
-  "description": "Home Assistant collector plugin for JunctionRelay",
+  "description": "Host system metrics collector plugin for JunctionRelay (Windows)",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,7 +20,7 @@
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",
-    "pack": "rm -rf out && mkdir -p out/home-assistant/dist && cp package.json out/home-assistant/ && cp dist/index.js out/home-assistant/dist/ && cd out && zip -r ../home-assistant.zip home-assistant && cd .. && rm -rf out",
+    "pack": "rm -rf out && mkdir -p out/junctionrelay.host-windows/dist && cp package.json out/junctionrelay.host-windows/ && cp dist/index.js out/junctionrelay.host-windows/dist/ && cp -r python out/junctionrelay.host-windows/ && cd out && zip -r ../junctionrelay.host-windows.zip junctionrelay.host-windows && cd .. && rm -rf out",
     "clean": "rm -rf dist out"
   },
   "dependencies": {
@@ -30,6 +30,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/catapultcase/JunctionRelay_Collectors.git",
-    "directory": "plugins/home-assistant"
+    "directory": "plugins/junctionrelay.host-windows"
   }
 }

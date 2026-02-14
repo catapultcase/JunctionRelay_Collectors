@@ -1,0 +1,35 @@
+{
+  "name": "@junctionrelay/plugin-home-assistant",
+  "version": "1.0.0",
+  "description": "Home Assistant collector plugin for JunctionRelay",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "junctionrelay": {
+    "type": "collector",
+    "entry": "dist/index.js"
+  },
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",
+    "pack": "rm -rf out && mkdir -p out/junctionrelay.home-assistant/dist && cp package.json out/junctionrelay.home-assistant/ && cp dist/index.js out/junctionrelay.home-assistant/dist/ && cd out && zip -r ../junctionrelay.home-assistant.zip junctionrelay.home-assistant && cd .. && rm -rf out",
+    "clean": "rm -rf dist out"
+  },
+  "dependencies": {
+    "@junctionrelay/collector-sdk": "1.0.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/catapultcase/JunctionRelay_Collectors.git",
+    "directory": "plugins/junctionrelay.home-assistant"
+  }
+}

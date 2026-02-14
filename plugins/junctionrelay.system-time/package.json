@@ -20,7 +20,7 @@
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",
-    "pack": "rm -rf out && mkdir -p out/system-time/dist && cp package.json out/system-time/ && cp dist/index.js out/system-time/dist/ && cd out && zip -r ../system-time.zip system-time && cd .. && rm -rf out",
+    "pack": "rm -rf out && mkdir -p out/junctionrelay.system-time/dist && cp package.json out/junctionrelay.system-time/ && cp dist/index.js out/junctionrelay.system-time/dist/ && cd out && zip -r ../junctionrelay.system-time.zip junctionrelay.system-time && cd .. && rm -rf out",
     "clean": "rm -rf dist out"
   },
   "dependencies": {
@@ -30,6 +30,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/catapultcase/JunctionRelay_Collectors.git",
-    "directory": "plugins/system-time"
+    "directory": "plugins/junctionrelay.system-time"
   }
 }
