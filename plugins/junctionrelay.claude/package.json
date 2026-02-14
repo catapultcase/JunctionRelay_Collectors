@@ -16,6 +16,7 @@
   ],
   "junctionrelay": {
     "type": "collector",
+    "collectorName": "junctionrelay.claude",
     "entry": "dist/index.js"
   },
   "scripts": {

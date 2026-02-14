@@ -16,6 +16,7 @@
   ],
   "junctionrelay": {
     "type": "collector",
+    "collectorName": "junctionrelay.system-time",
     "entry": "dist/index.js"
   },
   "scripts": {

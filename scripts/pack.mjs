@@ -12,8 +12,8 @@ import { deflateRawSync } from 'zlib';
 const pluginDir = process.cwd();
 const pkg = JSON.parse(readFileSync(join(pluginDir, 'package.json'), 'utf8'));
 
-// Use the folder name as the zip name (matches the namespaced convention)
-const pluginName = basename(pluginDir);
+// Use collectorName from manifest if available, fallback to folder name
+const pluginName = pkg.junctionrelay?.collectorName || basename(pluginDir);
 
 const distFile = join(pluginDir, 'dist', 'index.js');
 if (!existsSync(distFile)) {

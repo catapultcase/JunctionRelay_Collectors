@@ -16,6 +16,7 @@
   ],
   "junctionrelay": {
     "type": "collector",
+    "collectorName": "junctionrelay.internet-time",
     "entry": "dist/index.js"
   },
   "scripts": {

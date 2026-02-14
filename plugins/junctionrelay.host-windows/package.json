@@ -16,6 +16,7 @@
   ],
   "junctionrelay": {
     "type": "collector",
+    "collectorName": "junctionrelay.host-windows",
     "entry": "dist/index.js"
   },
   "scripts": {

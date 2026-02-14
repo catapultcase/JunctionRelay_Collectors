@@ -57,6 +57,7 @@ Update the `junctionrelay` manifest — this is how the host app discovers your 
   "main": "dist/index.js",
   "junctionrelay": {
     "type": "collector",
+    "collectorName": "yourname.my-thing",
     "entry": "dist/index.js"
   },
   "scripts": {
@@ -70,6 +71,7 @@ Update the `junctionrelay` manifest — this is how the host app discovers your 
 
 **Required manifest fields:**
 - `junctionrelay.type` must be `"collector"`
+- `junctionrelay.collectorName` — namespaced identifier (e.g. `"yourname.my-thing"`)
 - `junctionrelay.entry` points to the built JavaScript bundle
 
 **`collectorName` namespacing:** Plugin collector names must use `<namespace>.<name>` dot-notation where both segments are lowercase kebab-case (e.g. `yourname.my-plugin`, `junctionrelay.system-time`). This prevents collisions between plugins and built-in native collectors (`Cloudflare`, `Host`, `HWiNFO`, etc.), which are un-namespaced. The regex is exported as `PLUGIN_ID_PATTERN` from `@junctionrelay/collector-protocol`.

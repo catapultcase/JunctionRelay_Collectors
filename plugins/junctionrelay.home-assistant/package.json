@@ -16,6 +16,7 @@
   ],
   "junctionrelay": {
     "type": "collector",
+    "collectorName": "junctionrelay.home-assistant",
     "entry": "dist/index.js"
   },
   "scripts": {

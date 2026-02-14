@@ -174,6 +174,7 @@ export type CollectorMethod =
 
 export interface PluginManifest {
   type: 'collector';
+  collectorName: string;
   entry?: string;
 }
 
