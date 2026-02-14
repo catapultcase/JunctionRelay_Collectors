@@ -172,10 +172,21 @@ export type CollectorMethod =
 // Plugin Manifest & Discovery
 // ============================================================================
 
-export interface PluginManifest {
+export interface CollectorPluginManifest {
   type: 'collector';
+  entry: string;
   collectorName: string;
-  entry?: string;
+  displayName: string;
+  description: string;
+  category: string;
+  emoji: string;
+  fields: CollectorFieldRequirements;
+  defaults: CollectorDefaults;
+  setupInstructions: SetupStep[];
+  setupNote?: string | null;
+  supportsPersistentSession?: boolean;
+  requiresService?: boolean;
+  requiredServiceType?: string | null;
 }
 
 export interface DiscoveredPlugin {
@@ -183,5 +194,5 @@ export interface DiscoveredPlugin {
   version: string;
   path: string;
   entry: string;
-  manifest: PluginManifest;
+  manifest: CollectorPluginManifest;
 }

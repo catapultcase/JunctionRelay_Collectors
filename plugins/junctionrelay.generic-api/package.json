@@ -17,7 +17,39 @@
   "junctionrelay": {
     "type": "collector",
     "collectorName": "junctionrelay.generic-api",
-    "entry": "dist/index.js"
+    "entry": "dist/index.js",
+    "displayName": "Generic API",
+    "description": "Process JSON via AccessToken",
+    "category": "System & Testing",
+    "emoji": "\ud83d\udd0c",
+    "fields": {
+      "requiresUrl": true,
+      "requiresAccessToken": true,
+      "urlLabel": "Generic API URL",
+      "urlPlaceholder": "https://api.example.com",
+      "accessTokenLabel": "Generic API Access Token",
+      "accessTokenPlaceholder": "gapi_..."
+    },
+    "defaults": {
+      "name": "GenericAPI",
+      "url": "https://api.example.com",
+      "pollRate": 60000,
+      "sendRate": 5000
+    },
+    "setupInstructions": [
+      {
+        "title": "API Endpoint URL",
+        "body": "Enter the full URL to your JSON API endpoint. Must return JSON with `{ \"success\": true, \"data\": { ... } }` structure."
+      },
+      {
+        "title": "Access Token",
+        "body": "API authentication token (if required). Sent as `X-Collector-Token` header. Leave blank if API does not require authentication."
+      },
+      {
+        "title": "Expected Response Format",
+        "body": "```json\n{\"success\": true, \"data\": {\"metric1\": 123, \"metric2\": \"value\"}}\n```\nEach key-value pair in the `data` object becomes an individual sensor with smart categorization and unit detection."
+      }
+    ]
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",

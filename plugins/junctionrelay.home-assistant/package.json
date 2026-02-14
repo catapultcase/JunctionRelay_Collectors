@@ -17,7 +17,35 @@
   "junctionrelay": {
     "type": "collector",
     "collectorName": "junctionrelay.home-assistant",
-    "entry": "dist/index.js"
+    "entry": "dist/index.js",
+    "displayName": "Home Assistant",
+    "description": "Smart home automation",
+    "category": "Home & IoT",
+    "emoji": "\ud83c\udfe0",
+    "fields": {
+      "requiresUrl": true,
+      "requiresAccessToken": true,
+      "urlLabel": "Home Assistant URL",
+      "urlPlaceholder": "http://192.168.1.100:8123",
+      "accessTokenLabel": "Long-Lived Access Token",
+      "accessTokenPlaceholder": "eyJ..."
+    },
+    "defaults": {
+      "name": "Home Assistant",
+      "url": "http://192.168.1.100:8123",
+      "pollRate": 5000,
+      "sendRate": 5000
+    },
+    "setupInstructions": [
+      {
+        "title": "Home Assistant URL",
+        "body": "Your Home Assistant instance URL (e.g., `http://192.168.1.100:8123`)"
+      },
+      {
+        "title": "Create Long-Lived Access Token",
+        "body": "Go to **Profile** (click your name) → **Security** → Scroll to \"Long-lived access tokens\" → Click **Create Token** → Copy the generated token"
+      }
+    ]
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",

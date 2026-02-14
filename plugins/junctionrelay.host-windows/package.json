@@ -17,7 +17,31 @@
   "junctionrelay": {
     "type": "collector",
     "collectorName": "junctionrelay.host-windows",
-    "entry": "dist/index.js"
+    "entry": "dist/index.js",
+    "displayName": "Host Sensors (Windows)",
+    "description": "CPU, GPU, memory, disk, network, and battery monitoring using psutil",
+    "category": "System & Monitoring",
+    "emoji": "\ud83d\udda5\ufe0f",
+    "fields": {
+      "requiresUrl": false,
+      "requiresAccessToken": false
+    },
+    "defaults": {
+      "name": "Host Sensors",
+      "pollRate": 2000,
+      "sendRate": 2000
+    },
+    "setupInstructions": [
+      {
+        "title": "Requirements",
+        "body": "This plugin requires bundled Python 3.11 with psutil and GPUtil pre-installed. These are included when deploying via the build scripts."
+      },
+      {
+        "title": "GPU Support",
+        "body": "NVIDIA GPUs are detected via GPUtil. AMD/Intel GPUs on Windows use gpu-reader.exe (included in binaries/). On Linux, AMD GPUs are read via sysfs."
+      }
+    ],
+    "setupNote": "No configuration needed. The plugin automatically detects available hardware sensors."
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",

@@ -58,7 +58,26 @@ Update the `junctionrelay` manifest — this is how the host app discovers your 
   "junctionrelay": {
     "type": "collector",
     "collectorName": "yourname.my-thing",
-    "entry": "dist/index.js"
+    "entry": "dist/index.js",
+    "displayName": "My Thing",
+    "description": "What this collector does",
+    "category": "System & Testing",
+    "emoji": "\ud83d\udd27",
+    "fields": {
+      "requiresUrl": false,
+      "requiresAccessToken": false
+    },
+    "defaults": {
+      "name": "My Thing",
+      "pollRate": 10000,
+      "sendRate": 5000
+    },
+    "setupInstructions": [
+      {
+        "title": "No configuration needed",
+        "body": "This plugin works out of the box."
+      }
+    ]
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js"
@@ -73,6 +92,15 @@ Update the `junctionrelay` manifest — this is how the host app discovers your 
 - `junctionrelay.type` must be `"collector"`
 - `junctionrelay.collectorName` — namespaced identifier (e.g. `"yourname.my-thing"`)
 - `junctionrelay.entry` points to the built JavaScript bundle
+- `junctionrelay.displayName` — human-readable name shown in the UI
+- `junctionrelay.description` — short description
+- `junctionrelay.category` — UI grouping (e.g. `"Cloud Services"`, `"Home & IoT"`)
+- `junctionrelay.emoji` — icon shown next to the plugin name
+- `junctionrelay.fields` — configuration field requirements
+- `junctionrelay.defaults` — default values for name, URL, poll/send rates
+- `junctionrelay.setupInstructions` — steps shown to the user during setup
+
+All metadata lives in `package.json` (manifest-first design). The host reads metadata at discovery time without executing plugin code. This is the same pattern used by element plugins.
 
 **`collectorName` namespacing:** Plugin collector names must use `<namespace>.<name>` dot-notation where both segments are lowercase kebab-case (e.g. `yourname.my-plugin`, `junctionrelay.system-time`). This prevents collisions between plugins and built-in native collectors (`Cloudflare`, `Host`, `HWiNFO`, etc.), which are un-namespaced. The regex is exported as `PLUGIN_ID_PATTERN` from `@junctionrelay/collector-protocol`.
 

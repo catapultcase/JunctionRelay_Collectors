@@ -17,7 +17,26 @@
   "junctionrelay": {
     "type": "collector",
     "collectorName": "junctionrelay.system-time",
-    "entry": "dist/index.js"
+    "entry": "dist/index.js",
+    "displayName": "System Time",
+    "description": "Local system date and time",
+    "category": "System & Testing",
+    "emoji": "\ud83d\udd50",
+    "fields": {
+      "requiresUrl": false,
+      "requiresAccessToken": false
+    },
+    "defaults": {
+      "name": "System Time",
+      "pollRate": 5000,
+      "sendRate": 5000
+    },
+    "setupInstructions": [
+      {
+        "title": "No configuration needed",
+        "body": "This collector reads the local system clock. No URL or credentials required. Provides both UTC and local time formats with timezone detection."
+      }
+    ]
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",

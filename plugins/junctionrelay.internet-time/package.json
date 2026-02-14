@@ -17,7 +17,26 @@
   "junctionrelay": {
     "type": "collector",
     "collectorName": "junctionrelay.internet-time",
-    "entry": "dist/index.js"
+    "entry": "dist/index.js",
+    "displayName": "Internet Time",
+    "description": "Accurate time from internet sources",
+    "category": "System & Testing",
+    "emoji": "\ud83c\udf10",
+    "fields": {
+      "requiresUrl": false,
+      "requiresAccessToken": false
+    },
+    "defaults": {
+      "name": "Internet Time",
+      "pollRate": 5000,
+      "sendRate": 5000
+    },
+    "setupInstructions": [
+      {
+        "title": "No configuration needed",
+        "body": "Automatically fetches accurate UTC time from multiple internet sources with smart caching and failover. Requires network connectivity."
+      }
+    ]
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",

@@ -17,7 +17,36 @@
   "junctionrelay": {
     "type": "collector",
     "collectorName": "junctionrelay.claude",
-    "entry": "dist/index.js"
+    "entry": "dist/index.js",
+    "displayName": "Claude (Anthropic)",
+    "description": "API usage, costs, and organization monitoring",
+    "category": "Cloud Services",
+    "emoji": "\ud83e\udd16",
+    "fields": {
+      "requiresUrl": false,
+      "requiresAccessToken": true,
+      "accessTokenLabel": "Admin API Key",
+      "accessTokenPlaceholder": "sk-ant-admin..."
+    },
+    "defaults": {
+      "name": "Claude",
+      "pollRate": 60000,
+      "sendRate": 60000
+    },
+    "setupInstructions": [
+      {
+        "title": "Get an Admin API Key",
+        "body": "Go to console.anthropic.com \u2192 Settings \u2192 Admin API keys \u2192 Create key"
+      },
+      {
+        "title": "Required Permissions",
+        "body": "Key needs org:read and usage:read permissions"
+      },
+      {
+        "title": "Usage Data Delay",
+        "body": "Usage and cost data may be delayed up to 5 minutes from Anthropic"
+      }
+    ]
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",
