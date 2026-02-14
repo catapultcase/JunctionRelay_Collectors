@@ -19,16 +19,30 @@ plugins/
   junctionrelay.claude/           Cloud Services — Anthropic API usage, costs, and org data
 ```
 
+## Prerequisites
+
+- **Node.js 18+** — required for building and packing plugins
+- All commands work on Windows, macOS, and Linux — no WSL or Git Bash needed on Windows
+
 ## Creating a Plugin
 
 ### 1. Copy the reference plugin
 
 Copy `plugins/junctionrelay.system-time/` to a new folder. This can be anywhere on your filesystem — plugins do NOT need to live inside this monorepo.
 
+**macOS / Linux:**
 ```bash
 cp -r plugins/junctionrelay.system-time /path/to/my-plugin
 cd /path/to/my-plugin
 ```
+
+**Windows (PowerShell):**
+```powershell
+Copy-Item -Recurse plugins\junctionrelay.system-time C:\path\to\my-plugin
+cd C:\path\to\my-plugin
+```
+
+**Windows (File Explorer):** Copy-paste the `plugins\junctionrelay.system-time` folder to your desired location.
 
 ### 2. Edit `package.json`
 
@@ -328,13 +342,13 @@ This runs esbuild to produce `dist/index.js` — a single ESM bundle with all np
 
 ### 5. Pack and Deploy
 
-After building, create a distributable `.zip`:
+Build and pack in one step (works on all platforms):
 
 ```bash
-npm run pack
+npm run build && npm run pack
 ```
 
-This produces `<name>.zip` containing `<name>/package.json` and `<name>/dist/index.js`. All built-in plugins include this script.
+This produces `<name>.zip` containing `<name>/package.json` and `<name>/dist/index.js`. Plugins with extra directories (e.g., `python/` for host-windows) include those automatically.
 
 Drop the `.zip` file into the collectors directory:
 

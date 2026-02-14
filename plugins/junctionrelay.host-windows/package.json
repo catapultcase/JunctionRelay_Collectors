@@ -20,8 +20,8 @@
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",
-    "pack": "rm -rf out && mkdir -p out/junctionrelay.host-windows/dist && cp package.json out/junctionrelay.host-windows/ && cp dist/index.js out/junctionrelay.host-windows/dist/ && cp -r python out/junctionrelay.host-windows/ && cd out && zip -r ../junctionrelay.host-windows.zip junctionrelay.host-windows && cd .. && rm -rf out",
-    "clean": "rm -rf dist out"
+    "pack": "node ../../scripts/pack.mjs",
+    "clean": "node -e \"const fs=require('fs');fs.rmSync('dist',{recursive:true,force:true});fs.rmSync('out',{recursive:true,force:true})\""
   },
   "dependencies": {
     "@junctionrelay/collector-sdk": "1.0.0"

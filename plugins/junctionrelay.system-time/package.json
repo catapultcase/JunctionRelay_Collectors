@@ -20,8 +20,8 @@
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",
-    "pack": "rm -rf out && mkdir -p out/junctionrelay.system-time/dist && cp package.json out/junctionrelay.system-time/ && cp dist/index.js out/junctionrelay.system-time/dist/ && cd out && zip -r ../junctionrelay.system-time.zip junctionrelay.system-time && cd .. && rm -rf out",
-    "clean": "rm -rf dist out"
+    "pack": "node ../../scripts/pack.mjs",
+    "clean": "node -e \"const fs=require('fs');fs.rmSync('dist',{recursive:true,force:true});fs.rmSync('out',{recursive:true,force:true})\""
   },
   "dependencies": {
     "@junctionrelay/collector-sdk": "1.0.0"
