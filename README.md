@@ -413,14 +413,17 @@ If your plugin needs a specific runtime version or a dependency not included in 
 
 ## How It Works
 
+**Discovery** (startup — no code execution):
+```
+Host reads package.json → extracts metadata from "junctionrelay" section → registers type
+```
+
+**Runtime** (when a junction actually needs a collector):
 ```
 Host (Server or XSD)                Plugin (subprocess)
   │                                     │
-  ├── Discovers package.json ───────────┤
   ├── Spawns: node rpc-host.mjs dist/index.js
   │                                     ├── Prints "[plugin] ready" to stderr
-  ├── stdin: getMetadata ──────────────►│
-  │◄──────────────────── stdout: {...} ─┤
   ├── stdin: configure ────────────────►│
   │◄──────────────────── stdout: {...} ─┤
   ├── stdin: fetchSensors ─────────────►│
@@ -428,6 +431,7 @@ Host (Server or XSD)                Plugin (subprocess)
   │         ... (repeats on poll) ...   │
 ```
 
+- **Metadata comes from `package.json`** — no process spawning needed at discovery time
 - Communication is **JSON-RPC 2.0** over stdin/stdout (one JSON object per line)
 - Plugins log to **stderr** (the host captures these as plugin logs)
 - The SDK handles all JSON-RPC parsing, dispatching, and error handling — you just export a config object with handler functions
