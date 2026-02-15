@@ -77,7 +77,9 @@ Update the `junctionrelay` manifest — this is how the host app discovers your 
         "title": "No configuration needed",
         "body": "This plugin works out of the box."
       }
-    ]
+    ],
+    "authorName": "Your Name",
+    "authorUrl": "https://github.com/yourname"
   },
   "scripts": {
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js"
@@ -99,6 +101,12 @@ Update the `junctionrelay` manifest — this is how the host app discovers your 
 - `junctionrelay.fields` — configuration field requirements
 - `junctionrelay.defaults` — default values for name, URL, poll/send rates
 - `junctionrelay.setupInstructions` — steps shown to the user during setup
+
+**Optional author fields:**
+- `junctionrelay.authorName` — display name shown in the Collectors management tab
+- `junctionrelay.authorUrl` — homepage or profile URL (rendered as clickable link)
+
+When your plugin is distributed via JunctionRelay Cloud (FrameXchange), the marketplace adds two additional fields from your Clerk account: `authorId` and `authorAvatarUrl`. These are stored in the subscriber's local database alongside your manifest fields. **The UI always prefers Clerk data when available** — your Clerk display name and avatar override the manifest `authorName` in the subscriber's Collectors tab. The manifest `authorName` is the fallback for users who install your plugin manually (ZIP drop).
 
 All metadata lives in `package.json` (manifest-first design). The host reads metadata at discovery time without executing plugin code. This is the same pattern used by element plugins.
 
