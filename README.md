@@ -365,12 +365,29 @@ sanitizeSensorValue(3.14159, 2)   // → { value: "3.14", decimalPlaces: 2 }
 
 ### 4. Build
 
+**Inside the monorepo** — run from the repo root so protocol and SDK are built first:
+
 ```bash
 npm install
 npm run build
 ```
 
-This runs esbuild to produce `dist/index.js` — a single ESM bundle with all npm dependencies inlined. No `node_modules` needed at runtime.
+This builds `packages/protocol` → `packages/sdk` → all plugins in dependency order.
+
+To build a single plugin after the initial build:
+
+```bash
+npm run build -w plugins/junctionrelay.my-plugin
+```
+
+**Outside the monorepo** — run from your plugin directory:
+
+```bash
+npm install
+npm run build
+```
+
+Both produce `dist/index.js` — a single ESM bundle with all npm dependencies inlined. No `node_modules` needed at runtime.
 
 **Using `.js` instead of `.ts`:** Both work. If you use `.js`, change the build script to `esbuild src/index.js --bundle ...` and drop the TypeScript dependency. You lose type checking but the plugin still works identically.
 
