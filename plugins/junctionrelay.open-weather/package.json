@@ -1,0 +1,65 @@
+{
+  "name": "@junctionrelay/plugin-open-weather",
+  "version": "1.0.0",
+  "description": "OpenWeather API collector plugin for JunctionRelay",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "junctionrelay": {
+    "type": "collector",
+    "collectorName": "junctionrelay.open-weather",
+    "entry": "dist/index.js",
+    "displayName": "OpenWeather",
+    "description": "Current weather data from OpenWeather API",
+    "category": "Cloud Services",
+    "emoji": "\u26c5",
+    "fields": {
+      "requiresUrl": true,
+      "requiresAccessToken": true,
+      "urlLabel": "City",
+      "urlPlaceholder": "London,UK",
+      "accessTokenLabel": "OpenWeather API Key",
+      "accessTokenPlaceholder": "your_api_key_here"
+    },
+    "defaults": {
+      "name": "OpenWeather",
+      "url": "London,UK",
+      "pollRate": 300000,
+      "sendRate": 5000
+    },
+    "setupInstructions": [
+      {
+        "title": "Get a free API key",
+        "body": "Sign up at https://openweathermap.org/api and create a free API key. The free tier allows 1,000 calls/day."
+      },
+      {
+        "title": "Enter your city",
+        "body": "Use city name (e.g. \"London\"), city + country code (e.g. \"London,UK\"), or city + state + country (e.g. \"Portland,OR,US\")."
+      }
+    ],
+    "authorName": "JunctionRelay"
+  },
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js",
+    "pack": "node ../../scripts/pack.mjs",
+    "clean": "node -e \"const fs=require('fs');fs.rmSync('dist',{recursive:true,force:true});fs.rmSync('out',{recursive:true,force:true})\""
+  },
+  "dependencies": {
+    "@junctionrelay/collector-sdk": "1.0.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/catapultcase/JunctionRelay_Collectors.git",
+    "directory": "plugins/junctionrelay.open-weather"
+  }
+}
