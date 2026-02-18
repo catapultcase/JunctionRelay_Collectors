@@ -11,15 +11,11 @@
       "import": "./dist/index.js"
     }
   },
-  "bin": {
-    "rpc-host": "./bin/rpc-host.mjs"
-  },
   "files": [
-    "dist",
-    "bin"
+    "dist"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json && node -e \"require('esbuild').buildSync({entryPoints:['bin/rpc-host.mjs'],bundle:true,platform:'node',format:'esm',outfile:'dist/rpc-host.mjs'})\"",
+    "build": "tsc -p tsconfig.json",
     "test": "npx tsx --test src/__tests__/*.test.ts",
     "clean": "rm -rf dist"
   },
