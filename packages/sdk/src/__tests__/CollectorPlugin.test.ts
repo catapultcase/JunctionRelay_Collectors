@@ -76,7 +76,7 @@ describe('CollectorPlugin integration', () => {
     assert.equal(response.error, undefined);
 
     const metadata = response.result as { collectorName: string; displayName: string };
-    assert.equal(metadata.collectorName, 'junctionrelay.test-plugin');
+    assert.equal(metadata.collectorName, 'test.fixture-plugin');
     assert.equal(metadata.displayName, 'Test Plugin');
   });
 

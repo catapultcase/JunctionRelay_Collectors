@@ -15,7 +15,7 @@ import { CollectorPlugin } from '@junctionrelay/collector-sdk';
 
 new CollectorPlugin({
   metadata: {
-    collectorName: 'MyPlugin',
+    collectorName: 'mycompany.my-plugin',
     displayName: 'My Plugin',
     description: 'What this collects',
     category: 'Cloud Services',

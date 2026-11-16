@@ -447,7 +447,7 @@ Host reads package.json → extracts metadata from "junctionrelay" section → r
 ```
 Host (Server or XSD)                Plugin (subprocess)
   │                                     │
-  ├── Spawns: node rpc-host.mjs dist/index.js
+  ├── Spawns: plugin entry (dist/index.js) via host RPC runner
   │                                     ├── Prints "[plugin] ready" to stderr
   ├── stdin: configure ────────────────►│
   │◄──────────────────── stdout: {...} ─┤
@@ -484,7 +484,7 @@ npm install
 npm run build
 
 # Test a plugin manually via JSON-RPC
-echo '{"jsonrpc":"2.0","method":"getMetadata","params":{},"id":1}' | node packages/sdk/bin/rpc-host.mjs plugins/junctionrelay.system-time/dist/index.js
+echo '{"jsonrpc":"2.0","method":"getMetadata","params":{},"id":1}' | node --input-type=module -e "import { CollectorPlugin } from './packages/sdk/dist/index.js'; const { default: config } = await import('./plugins/junctionrelay.system-time/dist/index.js'); new CollectorPlugin(config).startRpc();"
 ```
 
 ## License
