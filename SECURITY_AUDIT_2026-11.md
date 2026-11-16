@@ -98,4 +98,9 @@ This report contains no secret values. It lists locations, kinds of issue, sever
 
 ## Test status
 
-The base branch test failure was caused by the SDK fixture plugin using the non-namespaced `collectorName` `TestPlugin`, which the namespaced `PLUGIN_ID_PATTERN` rejects before the spawned process can answer. The fixture was corrected to a valid namespaced identifier and the matching assertion updated; no production code was changed. `npm ci`, `npm run build`, and `npm test` now pass (27 tests, 0 failures).
+The security review itself changed no code. The repository's own test command did **not** pass on the base branch, and the reason is disclosed here.
+
+- On the base branch `npm ci` and `npm run build` succeed, but `npm test` fails in the `@junctionrelay/collector-sdk` workspace: 27 tests, 20 pass, 7 fail. The `helpers` suite (helpers.test.ts) passes; all 7 failures are in the `CollectorPlugin integration` suite (CollectorPlugin.test.ts).
+- Root cause (confirmed by running the base-branch command, not inferred): the test fixture `packages/sdk/src/__tests__/fixture-plugin.ts:7` set `collectorName: 'TestPlugin'`, which is not namespaced. The SDK constructor (`packages/sdk/src/CollectorPlugin.ts:34`) validates the name against `PLUGIN_ID_PATTERN` (`packages/protocol/src/index.ts:16`), which requires dot-notation names, and throws. The spawned fixture child process therefore died at startup, and every JSON-RPC round-trip test timed out ("Timeout waiting for response to ...").
+- That pre-existing failure is a test-harness defect, not a security finding, and it blocked any verification of this repository's test suite. It was fixed with the smallest possible change, in test files only: the fixture's `collectorName` was set to the valid namespaced id `test.test-plugin`, and the one `getMetadata` assertion in `packages/sdk/src/__tests__/CollectorPlugin.test.ts:79` that echoed the old value was updated to match. No production code, no test case, and no assertion strength was removed or weakened.
+- After that change `npm ci`, `npm run build` and `npm test` all pass: 27 tests, 27 pass, 0 failures.
