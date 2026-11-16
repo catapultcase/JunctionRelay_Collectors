@@ -4,7 +4,7 @@ import type { ConfigureParams, FetchSensorsResult } from '@junctionrelay/collect
 
 const config: CollectorPluginConfig = {
   metadata: {
-    collectorName: 'TestPlugin',
+    collectorName: 'junctionrelay.test-plugin',
     displayName: 'Test Plugin',
     description: 'A test fixture plugin',
     category: 'Test',
