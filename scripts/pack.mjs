@@ -14,8 +14,13 @@ const pkg = JSON.parse(readFileSync(join(pluginDir, 'package.json'), 'utf8'));
 
 const pluginName = pkg.junctionrelay?.collectorName;
 
-if (!pluginName) {
-  console.error('ERROR: package.json missing junctionrelay.collectorName');
+// Must stay in step with PLUGIN_ID_PATTERN in packages/protocol/src/index.ts.
+const PLUGIN_ID_PATTERN = /^[a-z][a-z0-9]*(-[a-z0-9]+)*\.[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
+
+if (typeof pluginName !== 'string' || !PLUGIN_ID_PATTERN.test(pluginName)) {
+  console.error(
+    'ERROR: junctionrelay.collectorName must match /^[a-z][a-z0-9]*(-[a-z0-9]+)*\\.[a-z][a-z0-9]*(-[a-z0-9]+)*$/ (lowercase kebab-case <namespace>.<name>)'
+  );
   process.exit(1);
 }
 

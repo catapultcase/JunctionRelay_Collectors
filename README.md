@@ -86,6 +86,9 @@ Update the `junctionrelay` manifest — this is how the host app discovers your 
   },
   "dependencies": {
     "@junctionrelay/collector-sdk": "1.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.3"
   }
 }
 ```

@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "build": "npm run build -w packages/protocol && npm run build --workspaces",
-    "test": "npm test --workspaces --if-present",
+    "test": "npm test --workspaces --if-present && node --test scripts/",
     "clean": "npm run clean --workspaces --if-present"
   },
   "devDependencies": {
