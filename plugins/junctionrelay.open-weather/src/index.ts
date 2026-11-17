@@ -1,5 +1,6 @@
 import { getDecimalPlaces } from '@junctionrelay/collector-sdk';
 import type { CollectorPluginConfig, SensorResult, ConfigureParams } from '@junctionrelay/collector-sdk';
+import { formatCityTime } from './cityTime.js';
 
 const API_BASE = 'https://api.openweathermap.org/data/2.5/weather';
 
@@ -18,6 +19,7 @@ interface OpenWeatherResponse {
   clouds: { all: number };
   sys: { sunrise: number; sunset: number; country: string };
   name: string;
+  timezone: number;
 }
 
 function extractConfig(config: ConfigureParams): { city: string; apiKey: string } {
@@ -253,7 +255,7 @@ export default {
       {
         uniqueSensorKey: 'weather_sunrise',
         name: 'Sunrise',
-        value: new Date(data.sys.sunrise * 1000).toLocaleTimeString(),
+        value: formatCityTime(data.sys.sunrise, data.timezone),
         unit: 'time',
         category: 'Sun',
         decimalPlaces: 0,
@@ -264,7 +266,7 @@ export default {
       {
         uniqueSensorKey: 'weather_sunset',
         name: 'Sunset',
-        value: new Date(data.sys.sunset * 1000).toLocaleTimeString(),
+        value: formatCityTime(data.sys.sunset, data.timezone),
         unit: 'time',
         category: 'Sun',
         decimalPlaces: 0,
