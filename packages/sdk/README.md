@@ -10,10 +10,12 @@ npm install @junctionrelay/collector-sdk
 
 ## Usage
 
-```typescript
-import { CollectorPlugin } from '@junctionrelay/collector-sdk';
+As a plugin author you **export a config object** — a `CollectorPluginConfig` with `metadata` and handler functions. That is all your plugin code does. You never instantiate anything: `CollectorPlugin` and its `startRpc()` method are used only by the host wrapper (`rpc-host`), which loads your default export and opens the JSON-RPC listener. Do not call them from plugin code.
 
-new CollectorPlugin({
+```typescript
+import type { CollectorPluginConfig } from '@junctionrelay/collector-sdk';
+
+export default {
   metadata: {
     collectorName: 'mycompany.my-plugin',
     displayName: 'My Plugin',
@@ -42,7 +44,7 @@ new CollectorPlugin({
       }],
     };
   },
-});
+} satisfies CollectorPluginConfig;
 ```
 
 ## What the SDK Handles
@@ -59,8 +61,11 @@ new CollectorPlugin({
 ## Exports
 
 ```typescript
-// Base class
+// Host-wrapper class — used only by rpc-host, not by plugin code
 import { CollectorPlugin } from '@junctionrelay/collector-sdk';
+
+// Config type for plugin authors — the object your plugin default-exports
+import type { CollectorPluginConfig } from '@junctionrelay/collector-sdk';
 
 // Helpers
 import { getDecimalPlaces, sanitizeSensorValue, safeRound } from '@junctionrelay/collector-sdk';

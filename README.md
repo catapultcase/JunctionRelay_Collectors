@@ -264,6 +264,7 @@ export default {
 
 **Key points:**
 - Plugins are **stateless** — no module-level variables. The host passes `config: ConfigureParams` (with `url`, `accessToken`, etc.) to every handler call.
+  - **Exception — process-wide state:** module-level variables are allowed *only* for data that is global to the machine and does not depend on any collector's config. Each collector still runs as its own subprocess, so this state is never shared between collector instances; it just describes the whole host. Valid cases are a cache of host-independent data or a single helper process for the local machine. The existing examples are `junctionrelay.internet-time` (a cached UTC time value and connection flag from internet time APIs) and `junctionrelay.host-windows` (one Python metrics bridge process for the local machine). Per-collector config — `url`, `accessToken`, `collectorId`, and anything else that comes from `ConfigureParams` — must **never** be kept at module level.
 - The `CollectorPluginConfig` type is the full interface. Use `satisfies` for type checking without wrapping in a class.
 - All handlers are optional. The SDK provides defaults (`{ success: true }` or `{ sensors: [] }`).
 - `fetchSensors` receives `config` with the URL and token the user configured in the UI.
